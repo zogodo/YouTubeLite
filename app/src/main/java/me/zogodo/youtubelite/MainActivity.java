@@ -24,7 +24,9 @@ public class MainActivity extends AppCompatActivity
         url = "https://m.baidu.com/";
         url = "https://www.w3schools.com/html/html5_video.asp";
         url = "http://yuntong.icu:8080/test_video.html";
-        //webView = findViewById(R.id.webview);
+        url = "https://m.hao123.com/";
+        url = "https://m.youtube.com";
+         //webView = findViewById(R.id.webview);
         webView = new MyWebView(this, new Stack<MyWebView>());
         webView.VebViewInit(url, "", "");
         webView.StartView();

@@ -51,6 +51,7 @@ public class MyWebView extends WebView
     //endregion
 
     //region goBack
+    /*
     public boolean canGoBack()
     {
         return this.webview_stack.size() > 1;
@@ -62,6 +63,7 @@ public class MyWebView extends WebView
 
         old_mywebview.StartView();
     }
+    */
     //endregion
 
     public void StartView()
