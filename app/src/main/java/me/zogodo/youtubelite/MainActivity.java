@@ -19,9 +19,14 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
 
+        String url = "https://m.youtube.com";
+        url = "https://zogodo.github.io/";
+        url = "https://m.baidu.com/";
+        url = "https://www.w3schools.com/html/html5_video.asp";
+        url = "http://yuntong.icu:8080/test_video.html";
         //webView = findViewById(R.id.webview);
         webView = new MyWebView(this, new Stack<MyWebView>());
-        webView.VebViewInit("https://zogodo.github.io/", "", "");
+        webView.VebViewInit(url, "", "");
         webView.StartView();
     }
 

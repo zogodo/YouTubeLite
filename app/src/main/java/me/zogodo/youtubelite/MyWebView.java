@@ -81,6 +81,12 @@ public class MyWebView extends WebView
         }
     }
 
+    //https://stackoverflow.com/questions/52028940/how-can-i-make-webview-keep-a-video-or-audio-playing-in-the-background
+    @Override
+    protected void onWindowVisibilityChanged(int visibility) {
+        if (visibility != View.GONE) super.onWindowVisibilityChanged(View.VISIBLE);
+    }
+
     public void injectCSS()
     {
         this.loadUrl("javascript:(function() {" +
