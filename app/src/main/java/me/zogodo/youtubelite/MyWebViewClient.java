@@ -1,12 +1,16 @@
 package me.zogodo.youtubelite;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.webkit.*;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.io.IOException;
 
@@ -23,9 +27,12 @@ public class MyWebViewClient extends WebViewClient
         this.mywebview = mywebview;
     }
 
-    /*
-    public boolean shouldOverrideUrlLoading(WebView view, String url)
+    //@Override
+    @TargetApi(24)
+    public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest req)
     {
+        String url = req.getUrl().toString();
+        Log.e("shouldOverrideUrlLoading", url);
         // Log.e("sho__ url", url);
         WebView.HitTestResult hit = view.getHitTestResult();
         if (hit.getExtra() != null)
@@ -34,8 +41,8 @@ public class MyWebViewClient extends WebViewClient
             view.setVisibility(view.INVISIBLE);
 
             LayoutInflater inflater = (LayoutInflater) this.mywebview.activity.getSystemService(LAYOUT_INFLATER_SERVICE);
-            RelativeLayout rel_layout = (RelativeLayout) inflater.inflate(R.layout.my_web_layout, null);
-            MyWebView new_mywebview = (MyWebView)rel_layout.findViewById(R.id.web_show0);
+            ConstraintLayout rel_layout = (ConstraintLayout) inflater.inflate(R.layout.activity_main, null);
+            MyWebView new_mywebview = rel_layout.findViewById(R.id.webview);
             new_mywebview.activity = this.mywebview.activity;
             new_mywebview.webview_stack = this.mywebview.webview_stack;
             //new_mywebview.first_load = false;
@@ -46,7 +53,6 @@ public class MyWebViewClient extends WebViewClient
         }
         return false;
     }
-    */
 
     public void onPageStarted(WebView view, String url, Bitmap favicon)
     {

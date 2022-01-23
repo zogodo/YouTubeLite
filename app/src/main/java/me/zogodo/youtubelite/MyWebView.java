@@ -4,6 +4,8 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -23,7 +25,7 @@ public class MyWebView extends WebView
     //region 共有变量
     public Activity activity;
     public Stack<MyWebView> webview_stack;
-    public boolean first_view = false;
+    public boolean first_view = true;
     public String myjs = "";
     public String mycss = "";
     public SwipeRefreshLayout swipe_refresh_layout = null;
@@ -64,12 +66,13 @@ public class MyWebView extends WebView
 
     public void StartView()
     {
+        this.setVisibility(VISIBLE);
         Object ob = this.getParent();
         if (ob != null)
         {
             this.swipe_refresh_layout = (SwipeRefreshLayout)ob;
             this.BindFresh(this.swipe_refresh_layout);
-            RelativeLayout rel_layout = (RelativeLayout)this.swipe_refresh_layout.getParent();
+            ConstraintLayout rel_layout = (ConstraintLayout)this.swipe_refresh_layout.getParent();
             this.activity.setContentView(rel_layout);
         }
         else

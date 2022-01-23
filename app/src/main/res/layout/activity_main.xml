@@ -6,9 +6,21 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <me.zogodo.youtubelite.MyWebView
-        android:id="@+id/webview"
+<!--    <me.zogodo.youtubelite.MyWebView-->
+<!--        android:id="@+id/webview"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent" />-->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/my_web_flresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <me.zogodo.youtubelite.MyWebView
+            android:id="@+id/webview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+        </me.zogodo.youtubelite.MyWebView>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

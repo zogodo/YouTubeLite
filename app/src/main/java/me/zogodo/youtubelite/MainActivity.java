@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.webkit.WebView;
 import android.widget.Toast;
 
+import java.util.Stack;
+
 public class MainActivity extends AppCompatActivity
 {
-    MyWebView webView;
+    MyWebView webView = null;
     long exitTime = 0;
 
     @Override
@@ -17,8 +19,10 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
 
-        webView = (MyWebView) findViewById(R.id.webview);
-        webView.VebViewInit("https://www.youtube.com", "", "");
+        //webView = findViewById(R.id.webview);
+        webView = new MyWebView(this, new Stack<MyWebView>());
+        webView.VebViewInit("https://zogodo.github.io/", "", "");
+        webView.StartView();
     }
 
     public void onBackPressed()
