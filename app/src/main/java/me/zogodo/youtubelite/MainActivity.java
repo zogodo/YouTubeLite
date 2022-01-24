@@ -5,8 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import java.util.Stack;
-
 public class MainActivity extends AppCompatActivity
 {
     public static MainActivity me;
@@ -17,15 +15,10 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
         MainActivity.me = this;
 
-        String url = "https://m.youtube.com";
-        //url = "http://yuntong.icu:8080/test_video.html";
-        url = "https://zogodo.github.io";
-        webView = new MyWebView();
-        webView.WebViewInit(url);
+        webView = new MyWebView("https://m.youtube.com");
         webView.StartView();
     }
 
