@@ -26,8 +26,7 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 public class MyWebView extends WebView
 {
     //region 共有变量
-    public Activity activity;
-    public Stack<MyWebView> webview_stack;
+    public static Stack<MyWebView> webview_stack = null;
     public String myjs = "";
     public String mycss = "";
     public SwipeRefreshLayout swipe_refresh_layout = null;
@@ -36,31 +35,32 @@ public class MyWebView extends WebView
     //endregion
 
     //region 构造器
-    public MyWebView(Activity activity, Stack<MyWebView> webview_stack)
+    public MyWebView()
     {
-        super(activity);
-        this.activity = activity;
-        this.webview_stack = webview_stack;
-        this.webview_stack.push(this);
+        super(MainActivity.me);
+        if (MyWebView.webview_stack == null)
+        {
+            MyWebView.webview_stack = new Stack<>();
+        }
+        MyWebView.webview_stack.push(this);
 
         this.setVisibility(this.INVISIBLE);
     }
     public MyWebView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        this.activity = (Activity)context;
     }
     //endregion
 
     //region goBack
     public boolean canGoBack()
     {
-        return this.webview_stack.size() > 1;
+        return MyWebView.webview_stack.size() > 1;
     }
     public void goBack()
     {
-        this.webview_stack.pop();
-        MyWebView old_mywebview = this.webview_stack.peek();
+        MyWebView.webview_stack.pop();
+        MyWebView old_mywebview = MyWebView.webview_stack.peek();
 
         old_mywebview.StartView();
     }
@@ -75,11 +75,11 @@ public class MyWebView extends WebView
             this.swipe_refresh_layout = (SwipeRefreshLayout)ob;
             this.BindFresh(this.swipe_refresh_layout);
             ConstraintLayout rel_layout = (ConstraintLayout)this.swipe_refresh_layout.getParent();
-            this.activity.setContentView(rel_layout);
+            MainActivity.me.setContentView(rel_layout);
         }
         else
         {
-            this.activity.setContentView(this);
+            MainActivity.me.setContentView(this);
         }
     }
 
@@ -121,15 +121,13 @@ public class MyWebView extends WebView
             @Override
             public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg)
             {
-                LayoutInflater inflater = (LayoutInflater) MyWebView.this.activity.getSystemService(LAYOUT_INFLATER_SERVICE);
+                LayoutInflater inflater = (LayoutInflater) MainActivity.me.getSystemService(LAYOUT_INFLATER_SERVICE);
                 ConstraintLayout rel_layout = (ConstraintLayout) inflater.inflate(R.layout.activity_main, null);
                 MyWebView new_mywebview = rel_layout.findViewById(R.id.webview);
 
                 //addView(new_mywebview);
                 MyWebView old_mywebview = (MyWebView)view;
-                old_mywebview.webview_stack.push(new_mywebview);
-                new_mywebview.activity = old_mywebview.activity;
-                new_mywebview.webview_stack = old_mywebview.webview_stack;
+                MyWebView.webview_stack.push(new_mywebview);
                 new_mywebview.WebViewInit(url, "", old_mywebview.mycss);
 
                 WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
@@ -146,7 +144,7 @@ public class MyWebView extends WebView
         }
         //endregion
 
-        WindowManager wm = (WindowManager)this.activity.getSystemService(Context.WINDOW_SERVICE);
+        WindowManager wm = (WindowManager)MainActivity.me.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         this.screen_width = display.getWidth();
         this.screen_height = display.getHeight();
