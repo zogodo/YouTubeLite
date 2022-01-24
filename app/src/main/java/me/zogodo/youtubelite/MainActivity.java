@@ -12,6 +12,12 @@ public class MainActivity extends AppCompatActivity
 {
     MyWebView webView = null;
     long exitTime = 0;
+    String my_js = "window.addEventListener('scroll', function () {\n" +
+                   "    var links = document.querySelectorAll('a:not([target=_blank])');\n" +
+                   "    for (var i = 0; i < links.length; i++) {\n" +
+                   "        links[i].target = '_blank';\n" +
+                   "    }\n" +
+                   "});";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,9 +33,10 @@ public class MainActivity extends AppCompatActivity
         url = "https://m.hao123.com/";
         url = "https://m.youtube.com";
         url = "http://yuntong.icu:8080/test_video.html";
+        url = "https://zogodo.github.io/";
          //webView = findViewById(R.id.webview);
         webView = new MyWebView(this, new Stack<MyWebView>());
-        webView.VebViewInit(url, "", "");
+        webView.VebViewInit(url, my_js, "");
         webView.StartView();
     }
 
