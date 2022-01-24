@@ -5,7 +5,6 @@ import android.os.Build;
 
 import android.util.AttributeSet;
 import android.view.*;
-import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
 import java.util.Stack;
