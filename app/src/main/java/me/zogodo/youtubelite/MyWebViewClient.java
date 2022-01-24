@@ -27,7 +27,7 @@ public class MyWebViewClient extends WebViewClient
         this.mywebview = mywebview;
     }
 
-    public static String oldUrl = "";
+    public static String newUrl = "https://m.baidu.com/";
     @Override
     public void doUpdateVisitedHistory(WebView view, String url, boolean isReload)
     {
@@ -63,6 +63,9 @@ public class MyWebViewClient extends WebViewClient
     @TargetApi(24)
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest req)
     {
+        newUrl = req.getUrl().toString();
+        return false;
+        /*
         String url = req.getUrl().toString();
         Log.e("zzz shouldOverrideUrlLoading", url);
         // Log.e("sho__ url", url);
@@ -84,6 +87,7 @@ public class MyWebViewClient extends WebViewClient
             new_mywebview.StartView();
         }
         return false;
+        */
     }
 
     public void onPageStarted(WebView view, String url, Bitmap favicon)

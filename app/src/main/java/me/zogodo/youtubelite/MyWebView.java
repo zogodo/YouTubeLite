@@ -7,15 +7,20 @@ import android.os.Build;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.*;
 import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.RelativeLayout;
 
 import java.util.Stack;
+
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 /**
  * Created by zogod on 17/2/19.
@@ -51,7 +56,6 @@ public class MyWebView extends WebView
     //endregion
 
     //region goBack
-    /*
     public boolean canGoBack()
     {
         return this.webview_stack.size() > 1;
@@ -63,7 +67,6 @@ public class MyWebView extends WebView
 
         old_mywebview.StartView();
     }
-    */
     //endregion
 
     public void StartView()
@@ -103,13 +106,14 @@ public class MyWebView extends WebView
     public void VebViewInit(String url, String js, String css)
     {
         this.getSettings().setJavaScriptEnabled(true);
-        this.getSettings().setSupportMultipleWindows(false);
+        this.getSettings().setSupportMultipleWindows(true);
         this.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
         this.setWebViewClient(new MyWebViewClient(this));
 
         //region 这两个是要在 Chrome inspect 调试时用的
         this.setWebChromeClient(new WebChromeClient() // alert() 要用
         {
+            @Override
             public boolean onConsoleMessage(ConsoleMessage cm)
             {
                 Log.d("MyApplication", cm.message() + " -- From line "
@@ -117,9 +121,55 @@ public class MyWebView extends WebView
                         + cm.sourceId());
                 return true;
             }
+            @Override
+            public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
+                //WebView newWebView = new WebView(getContext());
+                //addView(newWebView);
+                //WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
+                //transport.setWebView(newWebView);
+                //resultMsg.sendToTarget();
+
+                //WebView wvMain = new WebView(getContext());
+                //wvMain.setVerticalScrollBarEnabled(false);
+                //wvMain.setHorizontalScrollBarEnabled(false);
+                //wvMain.setWebViewClient(new UriWebViewClient());
+                //WebSettings webSettings = wvMain.getSettings();
+                //webSettings.setJavaScriptEnabled(true);
+                //webSettings.setAppCacheEnabled(true);
+                //webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
+                //webSettings.setSupportMultipleWindows(true);
+                //wvMain.setLayoutParams(new FrameLayout.LayoutParams(
+                //        ViewGroup.LayoutParams.MATCH_PARENT,
+                //        ViewGroup.LayoutParams.MATCH_PARENT));
+                //mContainer.addView(wvMain);
+                //WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
+                //transport.setWebView(wvMain);
+                //resultMsg.sendToTarget();
+
+                //s//MyWebView new_mywebview = new MyWebView(old_mywebview.activity, old_mywebview.webview_stack);
+
+                LayoutInflater inflater = (LayoutInflater) MyWebView.this.activity.getSystemService(LAYOUT_INFLATER_SERVICE);
+                ConstraintLayout rel_layout = (ConstraintLayout) inflater.inflate(R.layout.activity_main, null);
+                MyWebView new_mywebview = rel_layout.findViewById(R.id.webview);
+
+                //addView(new_mywebview);
+                MyWebView old_mywebview = (MyWebView)view;
+                old_mywebview.webview_stack.push(new_mywebview);
+                new_mywebview.activity = old_mywebview.activity;
+                new_mywebview.webview_stack = old_mywebview.webview_stack;
+                new_mywebview.VebViewInit(url, old_mywebview.myjs, old_mywebview.mycss);
+                old_mywebview.webview_stack.push(new_mywebview);
+
+                WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
+                transport.setWebView(new_mywebview);
+                resultMsg.sendToTarget();
+                new_mywebview.VebViewInit(MyWebViewClient.newUrl, "", "");
+                new_mywebview.StartView();
+
+                return true;
+            }
         });
-        if (BuildConfig.DEBUG && Build.VERSION.SDK_INT
-                >= Build.VERSION_CODES.KITKAT)
+        if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
         {
             this.setWebContentsDebuggingEnabled(true);
         }

@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity
         url = "http://yuntong.icu:8080/test_video.html";
         url = "https://m.hao123.com/";
         url = "https://m.youtube.com";
+        url = "http://yuntong.icu:8080/test_video.html";
          //webView = findViewById(R.id.webview);
         webView = new MyWebView(this, new Stack<MyWebView>());
         webView.VebViewInit(url, "", "");
