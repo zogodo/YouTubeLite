@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity
         //url = "http://yuntong.icu:8080/test_video.html";
         url = "https://zogodo.github.io";
         webView = new MyWebView();
-        webView.WebViewInit(url, MyWebView.myJs, "");
+        webView.WebViewInit(url);
         webView.StartView();
     }
 

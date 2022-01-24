@@ -27,7 +27,7 @@ public class MyWebView extends WebView
 {
     //region 共有变量
     public static Stack<MyWebView> webview_stack = null;
-    public static String myJs = "window.addEventListener('scroll', function () {\n" +
+    public final static String myJs = "window.addEventListener('scroll', function () {\n" +
             "    var links = document.querySelectorAll('a:not([target=_blank])');\n" +
             "    for (var i = 0; i < links.length; i++) {\n" +
             "        links[i].target = '_blank';\n" +
@@ -71,6 +71,8 @@ public class MyWebView extends WebView
 
     public void StartView()
     {
+        MainActivity.me.setContentView(this);
+        /*
         Object ob = this.getParent();
         if (ob != null)
         {
@@ -83,6 +85,7 @@ public class MyWebView extends WebView
         {
             MainActivity.me.setContentView(this);
         }
+        */
     }
 
     //https://stackoverflow.com/questions/52028940/how-can-i-make-webview-keep-a-video-or-audio-playing-in-the-background
@@ -102,7 +105,7 @@ public class MyWebView extends WebView
                 "})()");
     }
 
-    public void WebViewInit(String url, String js, String css)
+    public void WebViewInit(String url)
     {
         this.getSettings().setJavaScriptEnabled(true);
         this.getSettings().setSupportMultipleWindows(true);
@@ -123,13 +126,15 @@ public class MyWebView extends WebView
             @Override
             public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg)
             {
-                LayoutInflater inflater = (LayoutInflater) MainActivity.me.getSystemService(LAYOUT_INFLATER_SERVICE);
-                ConstraintLayout rel_layout = (ConstraintLayout) inflater.inflate(R.layout.activity_main, null);
-                MyWebView new_mywebview = rel_layout.findViewById(R.id.webview);
-                new_mywebview.WebViewInit(url, "", MyWebView.myCss);
+                //LayoutInflater inflater = (LayoutInflater) MainActivity.me.getSystemService(LAYOUT_INFLATER_SERVICE);
+                //ConstraintLayout rel_layout = (ConstraintLayout) inflater.inflate(R.layout.activity_main, null);
+                //MyWebView new_mywebview = rel_layout.findViewById(R.id.webview);
+
+                MyWebView new_mywebview = new MyWebView();
+                new_mywebview.WebViewInit(url);
 
                 //addView(new_mywebview);
-                MyWebView.webview_stack.push(new_mywebview);
+                //MyWebView.webview_stack.push(new_mywebview);
 
                 WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
                 transport.setWebView(new_mywebview);
@@ -150,8 +155,6 @@ public class MyWebView extends WebView
         this.screen_width = display.getWidth();
         this.screen_height = display.getHeight();
 
-        MyWebView.myJs = js;
-        MyWebView.myCss = css;
         this.loadUrl(url);
     }
 
