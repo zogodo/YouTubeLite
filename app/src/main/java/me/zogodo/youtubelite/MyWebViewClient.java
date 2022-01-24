@@ -13,7 +13,8 @@ public class MyWebViewClient extends WebViewClient
 {
     MyWebView mywebview;
 
-    public MyWebViewClient(MyWebView mywebview) {
+    public MyWebViewClient(MyWebView mywebview)
+    {
         this.mywebview = mywebview;
     }
 
@@ -25,7 +26,7 @@ public class MyWebViewClient extends WebViewClient
     }
 
     @Override
-    @TargetApi(24)
+    @TargetApi(Build.VERSION_CODES.N)
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest req)
     {
         Log.e("zzz shouldOverrideUrlLoading", req.getUrl().toString());
@@ -51,6 +52,14 @@ public class MyWebViewClient extends WebViewClient
         // Log.e("ended url", url);
         this.mywebview.loadUrl("javascript:" + MyWebView.myJs);
         this.mywebview.injectCSS();
+
+        //CookieSyncManager.getInstance().sync();
+        CookieManager cookieManager = CookieManager.getInstance();
+        cookieManager.setAcceptCookie(true);
+        String cookieStr = cookieManager.getCookie(url);
+        CookieTool.SaveCookie(MainActivity.me, cookieStr);
+        CookieTool.ReadCookie(MainActivity.me);
+
         super.onPageFinished(view, url);
     }
 
