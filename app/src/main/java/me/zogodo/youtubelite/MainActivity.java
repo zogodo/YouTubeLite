@@ -8,6 +8,7 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity
 {
     public static MainActivity me;
+    public static String youtubeUrl = "https://m.youtube.com";
     MyWebView webView = null;
     long exitTime = 0;
 
@@ -18,7 +19,8 @@ public class MainActivity extends AppCompatActivity
         getSupportActionBar().hide();
         MainActivity.me = this;
 
-        webView = new MyWebView("https://m.youtube.com");
+        //youtubeUrl = "https://zogodo.github.io";
+        webView = new MyWebView(youtubeUrl);
         webView.StartView();
     }
 

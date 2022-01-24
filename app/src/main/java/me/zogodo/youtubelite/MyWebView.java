@@ -3,11 +3,8 @@ package me.zogodo.youtubelite;
 import android.content.Context;
 import android.os.Build;
 
-import android.os.Message;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.*;
-import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
@@ -27,8 +24,6 @@ public class MyWebView extends WebView
             "    }\n" +
             "});";
     public static String myCss = "";
-    public int screen_width;
-    public int screen_height;
     //endregion
 
     //region 构造器
@@ -90,35 +85,12 @@ public class MyWebView extends WebView
         this.getSettings().setSupportMultipleWindows(true);
         this.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
         this.setWebViewClient(new MyWebViewClient(this));
-
-        //region 这两个是要在 Chrome inspect 调试时用的
-        this.setWebChromeClient(new WebChromeClient() // alert() 要用
-        {
-            @Override
-            public boolean onConsoleMessage(ConsoleMessage cm)
-            {
-                Log.d("MyApplication", cm.message() + " -- From line "
-                        + cm.lineNumber() + " of "
-                        + cm.sourceId());
-                return true;
-            }
-            @Override
-            public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg)
-            {
-                MyWebView new_mywebview = new MyWebView(url);
-                WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
-                transport.setWebView(new_mywebview);
-                resultMsg.sendToTarget();
-                new_mywebview.StartView();
-                return true;
-            }
-        });
+        //这两个是要在 Chrome inspect 调试时用的
+        this.setWebChromeClient(new MyWebChromeClient());
         if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
         {
             this.setWebContentsDebuggingEnabled(true);
         }
-        //endregion
-
         this.loadUrl(url);
     }
 }
