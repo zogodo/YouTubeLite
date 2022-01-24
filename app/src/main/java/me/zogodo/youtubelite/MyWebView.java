@@ -126,11 +126,10 @@ public class MyWebView extends WebView
                 LayoutInflater inflater = (LayoutInflater) MainActivity.me.getSystemService(LAYOUT_INFLATER_SERVICE);
                 ConstraintLayout rel_layout = (ConstraintLayout) inflater.inflate(R.layout.activity_main, null);
                 MyWebView new_mywebview = rel_layout.findViewById(R.id.webview);
+                new_mywebview.WebViewInit(url, "", MyWebView.myCss);
 
                 //addView(new_mywebview);
-                MyWebView old_mywebview = (MyWebView)view;
                 MyWebView.webview_stack.push(new_mywebview);
-                new_mywebview.WebViewInit(url, "", MyWebView.myCss);
 
                 WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
                 transport.setWebView(new_mywebview);
