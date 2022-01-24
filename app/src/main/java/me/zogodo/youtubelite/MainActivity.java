@@ -26,6 +26,8 @@ public class MainActivity extends AppCompatActivity
         getSupportActionBar().hide();
 
         String url = "https://m.youtube.com";
+        //url = "http://yuntong.icu:8080/test_video.html";
+        //url = "https://zogodo.github.io";
         webView = new MyWebView(this, new Stack<>());
         webView.WebViewInit(url, my_js, "");
         webView.StartView();

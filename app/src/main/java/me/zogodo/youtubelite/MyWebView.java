@@ -130,7 +130,7 @@ public class MyWebView extends WebView
                 old_mywebview.webview_stack.push(new_mywebview);
                 new_mywebview.activity = old_mywebview.activity;
                 new_mywebview.webview_stack = old_mywebview.webview_stack;
-                new_mywebview.WebViewInit(url, old_mywebview.myjs, old_mywebview.mycss);
+                new_mywebview.WebViewInit(url, "", old_mywebview.mycss);
 
                 WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
                 transport.setWebView(new_mywebview);
