@@ -27,13 +27,13 @@ public class MyWebView extends WebView
 {
     //region 共有变量
     public static Stack<MyWebView> webview_stack = null;
-    public static String myjs = "window.addEventListener('scroll', function () {\n" +
+    public static String myJs = "window.addEventListener('scroll', function () {\n" +
             "    var links = document.querySelectorAll('a:not([target=_blank])');\n" +
             "    for (var i = 0; i < links.length; i++) {\n" +
             "        links[i].target = '_blank';\n" +
             "    }\n" +
             "});";
-    public static String mycss = "";
+    public static String myCss = "";
     public SwipeRefreshLayout swipe_refresh_layout = null;
     public int screen_width;
     public int screen_height;
@@ -97,7 +97,7 @@ public class MyWebView extends WebView
                 "var parent = document.getElementsByTagName('head').item(0);" +
                 "var style = document.createElement('style');" +
                 "style.type = 'text/css';" +
-                "style.innerHTML = '" + this.mycss + "';" +
+                "style.innerHTML = '" + MyWebView.myCss + "';" +
                 "parent.appendChild(style)" +
                 "})()");
     }
@@ -130,7 +130,7 @@ public class MyWebView extends WebView
                 //addView(new_mywebview);
                 MyWebView old_mywebview = (MyWebView)view;
                 MyWebView.webview_stack.push(new_mywebview);
-                new_mywebview.WebViewInit(url, "", old_mywebview.mycss);
+                new_mywebview.WebViewInit(url, "", MyWebView.myCss);
 
                 WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
                 transport.setWebView(new_mywebview);
@@ -151,8 +151,8 @@ public class MyWebView extends WebView
         this.screen_width = display.getWidth();
         this.screen_height = display.getHeight();
 
-        MyWebView.myjs = js;
-        MyWebView.mycss = css;
+        MyWebView.myJs = js;
+        MyWebView.myCss = css;
         this.loadUrl(url);
     }
 

@@ -49,7 +49,7 @@ public class MyWebViewClient extends WebViewClient
     public void onPageFinished(WebView view, String url)
     {
         // Log.e("ended url", url);
-        this.mywebview.loadUrl("javascript:" + this.mywebview.myjs);
+        this.mywebview.loadUrl("javascript:" + MyWebView.myJs);
         this.mywebview.injectCSS();
         super.onPageFinished(view, url);
     }
