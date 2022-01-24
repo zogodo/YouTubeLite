@@ -3,7 +3,6 @@ package me.zogodo.youtubelite;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.webkit.WebView;
 import android.widget.Toast;
 
 import java.util.Stack;
@@ -12,7 +11,7 @@ public class MainActivity extends AppCompatActivity
 {
     MyWebView webView = null;
     long exitTime = 0;
-    String my_js = "window.addEventListener('scroll', function () {\n" +
+    public static String my_js = "window.addEventListener('scroll', function () {\n" +
                    "    var links = document.querySelectorAll('a:not([target=_blank])');\n" +
                    "    for (var i = 0; i < links.length; i++) {\n" +
                    "        links[i].target = '_blank';\n" +
@@ -26,15 +25,6 @@ public class MainActivity extends AppCompatActivity
         getSupportActionBar().hide();
 
         String url = "https://m.youtube.com";
-        url = "https://zogodo.github.io/";
-        url = "https://m.baidu.com/";
-        url = "https://www.w3schools.com/html/html5_video.asp";
-        url = "http://yuntong.icu:8080/test_video.html";
-        url = "https://m.hao123.com/";
-        url = "https://m.youtube.com";
-        url = "http://yuntong.icu:8080/test_video.html";
-        url = "https://zogodo.github.io/";
-         //webView = findViewById(R.id.webview);
         webView = new MyWebView(this, new Stack<MyWebView>());
         webView.VebViewInit(url, my_js, "");
         webView.StartView();
