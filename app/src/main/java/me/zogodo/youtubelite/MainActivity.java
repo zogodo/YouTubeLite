@@ -19,14 +19,15 @@ public class MainActivity extends AppCompatActivity
                    "});";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
 
         String url = "https://m.youtube.com";
-        webView = new MyWebView(this, new Stack<MyWebView>());
-        webView.VebViewInit(url, my_js, "");
+        webView = new MyWebView(this, new Stack<>());
+        webView.WebViewInit(url, my_js, "");
         webView.StartView();
     }
 

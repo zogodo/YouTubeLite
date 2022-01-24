@@ -31,7 +31,7 @@ public class MyWebView extends WebView
     public String myjs = "";
     public String mycss = "";
     public SwipeRefreshLayout swipe_refresh_layout = null;
-    public int screen_witdh;
+    public int screen_width;
     public int screen_height;
     //endregion
 
@@ -100,7 +100,7 @@ public class MyWebView extends WebView
                 "})()");
     }
 
-    public void VebViewInit(String url, String js, String css)
+    public void WebViewInit(String url, String js, String css)
     {
         this.getSettings().setJavaScriptEnabled(true);
         this.getSettings().setSupportMultipleWindows(true);
@@ -130,7 +130,7 @@ public class MyWebView extends WebView
                 old_mywebview.webview_stack.push(new_mywebview);
                 new_mywebview.activity = old_mywebview.activity;
                 new_mywebview.webview_stack = old_mywebview.webview_stack;
-                new_mywebview.VebViewInit(url, old_mywebview.myjs, old_mywebview.mycss);
+                new_mywebview.WebViewInit(url, old_mywebview.myjs, old_mywebview.mycss);
 
                 WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
                 transport.setWebView(new_mywebview);
@@ -148,7 +148,7 @@ public class MyWebView extends WebView
 
         WindowManager wm = (WindowManager)this.activity.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
-        this.screen_witdh = display.getWidth();
+        this.screen_width = display.getWidth();
         this.screen_height = display.getHeight();
 
         this.myjs = js;
@@ -217,7 +217,7 @@ public class MyWebView extends WebView
         }
         float y = event.getY();
         float x = event.getX();
-        if (x > this.screen_witdh/2 - x/6 && x < this.screen_witdh/2 + x/6)
+        if (x > this.screen_width/2 - x/6 && x < this.screen_width/2 + x/6)
         {
             swipe_refresh_layout.setEnabled(true);
         }
