@@ -51,9 +51,6 @@ public class MyWebViewClient extends WebViewClient
         // Log.e("ended url", url);
         this.mywebview.loadUrl("javascript:" + this.mywebview.myjs);
         this.mywebview.injectCSS();
-
-        this.mywebview.setVisibility(this.mywebview.VISIBLE);
-
         super.onPageFinished(view, url);
     }
 

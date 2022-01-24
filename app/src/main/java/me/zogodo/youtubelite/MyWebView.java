@@ -27,8 +27,13 @@ public class MyWebView extends WebView
 {
     //region 共有变量
     public static Stack<MyWebView> webview_stack = null;
-    public String myjs = "";
-    public String mycss = "";
+    public static String myjs = "window.addEventListener('scroll', function () {\n" +
+            "    var links = document.querySelectorAll('a:not([target=_blank])');\n" +
+            "    for (var i = 0; i < links.length; i++) {\n" +
+            "        links[i].target = '_blank';\n" +
+            "    }\n" +
+            "});";
+    public static String mycss = "";
     public SwipeRefreshLayout swipe_refresh_layout = null;
     public int screen_width;
     public int screen_height;
@@ -43,8 +48,6 @@ public class MyWebView extends WebView
             MyWebView.webview_stack = new Stack<>();
         }
         MyWebView.webview_stack.push(this);
-
-        this.setVisibility(this.INVISIBLE);
     }
     public MyWebView(Context context, AttributeSet attrs)
     {
@@ -68,7 +71,6 @@ public class MyWebView extends WebView
 
     public void StartView()
     {
-        this.setVisibility(VISIBLE);
         Object ob = this.getParent();
         if (ob != null)
         {
@@ -149,8 +151,8 @@ public class MyWebView extends WebView
         this.screen_width = display.getWidth();
         this.screen_height = display.getHeight();
 
-        this.myjs = js;
-        this.mycss = css;
+        MyWebView.myjs = js;
+        MyWebView.mycss = css;
         this.loadUrl(url);
     }
 

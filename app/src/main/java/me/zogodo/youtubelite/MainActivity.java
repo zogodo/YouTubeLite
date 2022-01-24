@@ -12,12 +12,6 @@ public class MainActivity extends AppCompatActivity
     public static MainActivity me;
     MyWebView webView = null;
     long exitTime = 0;
-    public static String my_js = "window.addEventListener('scroll', function () {\n" +
-                   "    var links = document.querySelectorAll('a:not([target=_blank])');\n" +
-                   "    for (var i = 0; i < links.length; i++) {\n" +
-                   "        links[i].target = '_blank';\n" +
-                   "    }\n" +
-                   "});";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -31,7 +25,7 @@ public class MainActivity extends AppCompatActivity
         //url = "http://yuntong.icu:8080/test_video.html";
         url = "https://zogodo.github.io";
         webView = new MyWebView();
-        webView.WebViewInit(url, my_js, "");
+        webView.WebViewInit(url, MyWebView.myjs, "");
         webView.StartView();
     }
 
