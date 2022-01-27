@@ -1,5 +1,6 @@
 package me.zogodo.youtubelite;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 
@@ -78,11 +79,14 @@ public class MyWebView extends WebView
                 "})()");
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     public void WebViewInit(String url)
     {
         this.getSettings().setJavaScriptEnabled(true);
         this.getSettings().setSupportMultipleWindows(true);
         this.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+        this.getSettings().setAllowFileAccess(true);
+        this.getSettings().setAppCacheEnabled(true);
         this.setWebViewClient(new MyWebViewClient(this));
         //这两个是要在 Chrome inspect 调试时用的
         this.setWebChromeClient(new MyWebChromeClient());
