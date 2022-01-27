@@ -43,20 +43,31 @@ public class MyWebChromeClient extends WebChromeClient
     @Override
     public void onShowCustomView(View view, CustomViewCallback callback) {
         MainActivity.me.setContentView(view);
-        //((FrameLayout)MainActivity.me.getWindow().getDecorView()).addView (view, new FrameLayout.LayoutParams(-1, -1));
-        MainActivity.me.getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LOW_PROFILE
-                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         MainActivity.me.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        //MainActivity.me.getWindow().getDecorView().setSystemUiVisibility(3846 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
 
+        WindowManager.LayoutParams attrs = MainActivity.me.getWindow().getAttributes();
+        attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+        MainActivity.me.getWindow().setAttributes(attrs);
+        MainActivity.me.getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        //MainActivity.me.getWindow().getDecorView().setSystemUiVisibility(3846 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+        //MainActivity.me.getWindow().getDecorView().setSystemUiVisibility(
+        //        View.SYSTEM_UI_FLAG_LOW_PROFILE
+        //        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+        //        | View.SYSTEM_UI_FLAG_FULLSCREEN
+        //        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         super.onShowCustomView(view, callback);
     }
 
     @Override
     public void onHideCustomView() {
         MainActivity.me.setContentView(MyWebView.webview_stack.peek());
+        MainActivity.me.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+
+        WindowManager.LayoutParams attrs = MainActivity.me.getWindow().getAttributes();
+        attrs.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        MainActivity.me.getWindow().setAttributes(attrs);
+        MainActivity.me.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+
+        super.onHideCustomView();
     }
 }
