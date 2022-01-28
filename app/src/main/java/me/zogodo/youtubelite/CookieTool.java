@@ -11,6 +11,15 @@ import java.io.IOException;
 
 public class CookieTool
 {
+    public String RawFileToString(Activity act, int file_id) throws IOException
+    {
+        //读取Raw文件成字符串
+        InputStream is = act.getResources().openRawResource(file_id);
+        byte[] buffer = new byte[1024];
+        int count = is.read(buffer);
+        return new String(buffer);
+    }
+
     public static void SaveCookie(Context ctt, String cookieStr)
     {
         String filePath = ctt.getFilesDir().getPath() + "/cookie";
