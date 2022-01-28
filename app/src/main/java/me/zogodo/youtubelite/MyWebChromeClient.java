@@ -10,16 +10,9 @@ import android.view.WindowManager;
 import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import android.widget.FrameLayout;
 
 public class MyWebChromeClient extends WebChromeClient
 {
-    private View mCustomView;
-    private WebChromeClient.CustomViewCallback mCustomViewCallback;
-    protected FrameLayout mFullscreenContainer;
-    private int mOriginalOrientation;
-    private int mOriginalSystemUiVisibility;
-
     @Override
     public boolean onConsoleMessage(ConsoleMessage cm)
     {
@@ -32,7 +25,7 @@ public class MyWebChromeClient extends WebChromeClient
     @Override
     public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg)
     {
-        MyWebView new_mywebview = new MyWebView(MainActivity.youtubeUrl);
+        MyWebView new_mywebview = new MyWebView(MainActivity.indexUrl);
         WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
         transport.setWebView(new_mywebview);
         resultMsg.sendToTarget();
