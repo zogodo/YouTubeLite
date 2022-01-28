@@ -8,10 +8,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class CookieTool
 {
-    public String RawFileToString(Activity act, int file_id) throws IOException
+    public String RawFileToString(Context act, int file_id) throws IOException
     {
         //读取Raw文件成字符串
         InputStream is = act.getResources().openRawResource(file_id);
