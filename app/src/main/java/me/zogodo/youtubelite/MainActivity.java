@@ -1,9 +1,14 @@
 package me.zogodo.youtubelite;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.Context;
 import android.os.Bundle;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import org.adblockplus.libadblockplus.android.AdblockEngine;
+import org.adblockplus.libadblockplus.android.settings.AdblockHelper;
+import org.adblockplus.libadblockplus.android.webview.AdblockWebView;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -20,8 +25,23 @@ public class MainActivity extends AppCompatActivity
         MainActivity.me = this;
 
         //indexUrl = "https://zogodo.github.io";
-        webView = new MyWebView(indexUrl);
-        webView.StartView();
+        //webView = new MyWebView(indexUrl);
+        //webView.StartView();
+
+        String basePath = getDir(AdblockEngine.BASE_PATH_DIRECTORY, Context.MODE_PRIVATE).getAbsolutePath();
+        AdblockHelper
+                .get()
+                .init(this, basePath, AdblockHelper.PREFERENCE_NAME)
+                .preloadSubscriptions(R.raw.easylist_minified, R.raw.exceptionrules_minimal)
+                .setDisabledByDefault();
+        AdblockHelper.get().getProvider().retain(false);
+        AdblockHelper.get().getProvider().waitForReady();
+        final AdblockEngine adblockEngine = AdblockHelper.get().getProvider().getEngine();
+        adblockEngine.setEnabled(true);
+
+        AdblockWebView webView2 = new AdblockWebView(this);
+        this.setContentView(webView2);
+        webView2.loadUrl(indexUrl);
     }
 
     public void onBackPressed()
