@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity
     public static MainActivity me;
     public static String indexUrl = "https://m.youtube.com";
     MyWebView webView = null;
+    AdblockWebView webView2 = null;
     long exitTime = 0;
 
     @Override
@@ -23,10 +24,6 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         MainActivity.me = this;
-
-        //indexUrl = "https://zogodo.github.io";
-        //webView = new MyWebView(indexUrl);
-        //webView.StartView();
 
         String basePath = getDir(AdblockEngine.BASE_PATH_DIRECTORY, Context.MODE_PRIVATE).getAbsolutePath();
         AdblockHelper
@@ -39,9 +36,13 @@ public class MainActivity extends AppCompatActivity
         final AdblockEngine adblockEngine = AdblockHelper.get().getProvider().getEngine();
         adblockEngine.setEnabled(true);
 
-        AdblockWebView webView2 = new AdblockWebView(this);
-        this.setContentView(webView2);
-        webView2.loadUrl(indexUrl);
+        //indexUrl = "https://zogodo.github.io";
+        webView = new MyWebView(indexUrl);
+        webView.StartView();
+
+        //webView2 = new AdblockWebView(this);
+        //this.setContentView(webView2);
+        //webView2.loadUrl(indexUrl);
     }
 
     public void onBackPressed()

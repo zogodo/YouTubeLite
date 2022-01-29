@@ -3,17 +3,17 @@ package me.zogodo.youtubelite;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
-
 import android.util.AttributeSet;
-import android.view.*;
-import android.webkit.WebView;
+import android.view.View;
+
+import org.adblockplus.libadblockplus.android.webview.AdblockWebView;
 
 import java.util.Stack;
 
 /**
  * Created by zogod on 17/2/19.
  */
-public class MyWebView extends WebView
+public class MyWebView extends AdblockWebView
 {
     //region 共有变量
     public static Stack<MyWebView> webview_stack = null;
