@@ -2,6 +2,7 @@ package me.zogodo.youtubelite;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.webkit.WebView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,8 +15,7 @@ public class MainActivity extends AppCompatActivity
 {
     public static MainActivity me;
     public static String indexUrl = "https://m.youtube.com";
-    MyWebView webView = null;
-    AdblockWebView webView2 = null;
+    WebView webView = null;
     long exitTime = 0;
 
     @Override
@@ -29,20 +29,30 @@ public class MainActivity extends AppCompatActivity
         AdblockHelper
                 .get()
                 .init(this, basePath, AdblockHelper.PREFERENCE_NAME)
-                .preloadSubscriptions(R.raw.easylist_minified, R.raw.exceptionrules_minimal)
-                .setDisabledByDefault();
+                .preloadSubscriptions(R.raw.easylist_minified, R.raw.exceptionrules_minimal);
+                //.setDisabledByDefault();
         AdblockHelper.get().getProvider().retain(false);
         AdblockHelper.get().getProvider().waitForReady();
         final AdblockEngine adblockEngine = AdblockHelper.get().getProvider().getEngine();
         adblockEngine.setEnabled(true);
 
-        //indexUrl = "https://zogodo.github.io";
-        webView = new MyWebView(indexUrl);
-        webView.StartView();
+        /*
+        AdblockSettingsStorage storage = AdblockHelper.get().getStorage();
+        AdblockSettings settings = storage.load();
+        if (settings == null) // not yet saved
+        {
+            settings = AdblockSettingsStorage.getDefaultSettings(this); // default
+        }
+        settings.setAdblockEnabled(true);
+        storage.save(settings);
+        */
 
-        //webView2 = new AdblockWebView(this);
-        //this.setContentView(webView2);
-        //webView2.loadUrl(indexUrl);
+        indexUrl = "https://zogodo.github.io";
+        indexUrl = "https://www.openguet.cn/lab/views/login.jsp";
+        indexUrl = "http://nsfwyoutube.com/";
+        webView = new AdblockWebView(this);
+        this.setContentView(webView);
+        webView.loadUrl(indexUrl);
     }
 
     public void onBackPressed()

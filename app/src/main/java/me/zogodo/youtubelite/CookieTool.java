@@ -23,6 +23,10 @@ public class CookieTool
 
     public static void SaveCookie(Context ctt, String cookieStr)
     {
+        if (cookieStr == null)
+        {
+            return;
+        }
         String filePath = ctt.getFilesDir().getPath() + "/cookie";
         Log.e("zzz Cookie ", filePath + " | " + cookieStr);
         BufferedWriter writer;

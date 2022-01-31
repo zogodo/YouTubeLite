@@ -25,11 +25,11 @@ public class MyWebChromeClient extends WebChromeClient
     @Override
     public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg)
     {
-        MyWebView new_mywebview = new MyWebView(MainActivity.indexUrl);
+        MyWebView new_mywebview = new MyWebView();
         WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
         transport.setWebView(new_mywebview);
         resultMsg.sendToTarget();
-        new_mywebview.StartView();
+        new_mywebview.loadUrl(MainActivity.indexUrl); //TODO ?
         return true;
     }
 

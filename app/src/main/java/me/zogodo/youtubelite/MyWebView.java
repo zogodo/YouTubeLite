@@ -27,7 +27,7 @@ public class MyWebView extends AdblockWebView
     //endregion
 
     //region 构造器
-    public MyWebView(String url)
+    public MyWebView()
     {
         super(MainActivity.me);
         if (MyWebView.webview_stack == null)
@@ -35,7 +35,7 @@ public class MyWebView extends AdblockWebView
             MyWebView.webview_stack = new Stack<>();
         }
         MyWebView.webview_stack.push(this);
-        this.WebViewInit(url);
+        this.WebViewInit();
     }
     public MyWebView(Context context, AttributeSet attrs)
     {
@@ -53,12 +53,14 @@ public class MyWebView extends AdblockWebView
         MyWebView.webview_stack.pop();
         MyWebView old_mywebview = MyWebView.webview_stack.peek();
 
-        old_mywebview.StartView();
+        MainActivity.me.setContentView(this);
     }
     //endregion
 
-    public void StartView()
+    @Override
+    public void loadUrl(String url)
     {
+        super.loadUrl(url);
         MainActivity.me.setContentView(this);
     }
 
@@ -80,7 +82,7 @@ public class MyWebView extends AdblockWebView
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    public void WebViewInit(String url)
+    public void WebViewInit()
     {
         this.getSettings().setJavaScriptEnabled(true);
         this.getSettings().setSupportMultipleWindows(true);
@@ -94,7 +96,6 @@ public class MyWebView extends AdblockWebView
         {
             this.setWebContentsDebuggingEnabled(true);
         }
-        this.loadUrl(url);
     }
 }
 

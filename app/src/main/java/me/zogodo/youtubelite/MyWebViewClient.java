@@ -36,10 +36,12 @@ public class MyWebViewClient extends WebViewClient
     public void onPageStarted(WebView view, String url, Bitmap favicon)
     {
         Log.e("zzz onPageStarted", url);
+        /*
         String cookieStr = CookieTool.ReadCookie(MainActivity.me);
         CookieManager cookieManager = CookieManager.getInstance();
         cookieManager.setAcceptCookie(true);
         cookieManager.setCookie(url, cookieStr);
+        */
         super.onPageStarted(view, url, favicon);
     }
 
@@ -64,10 +66,12 @@ public class MyWebViewClient extends WebViewClient
         this.mywebview.loadUrl("javascript:" + MyWebView.myJs);
         this.mywebview.injectCSS();
 
+        /*
         CookieManager cookieManager = CookieManager.getInstance();
         cookieManager.setAcceptCookie(true);
         String cookieStr = cookieManager.getCookie(url);
         CookieTool.SaveCookie(MainActivity.me, cookieStr);
+        */
 
         super.onPageFinished(view, url);
     }
