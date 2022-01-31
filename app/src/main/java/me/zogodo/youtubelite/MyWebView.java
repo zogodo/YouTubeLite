@@ -17,12 +17,7 @@ public class MyWebView extends AdblockWebView
 {
     //region 共有变量
     public static Stack<MyWebView> webview_stack = null;
-    public final static String myJs = "window.addEventListener('scroll', function () {\n" +
-            "    var links = document.querySelectorAll('a:not([target=_blank])');\n" +
-            "    for (var i = 0; i < links.length; i++) {\n" +
-            "        links[i].target = '_blank';\n" +
-            "    }\n" +
-            "});";
+    public static String myJs = null;
     public static String myCss = "";
     //endregion
 
@@ -33,6 +28,7 @@ public class MyWebView extends AdblockWebView
         if (MyWebView.webview_stack == null)
         {
             MyWebView.webview_stack = new Stack<>();
+            MyWebView.myJs = CookieTool.RawFileToString(MainActivity.me, R.raw.myjs);
         }
         MyWebView.webview_stack.push(this);
         this.WebViewInit();

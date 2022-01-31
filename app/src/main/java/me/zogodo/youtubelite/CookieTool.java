@@ -9,16 +9,25 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 
 public class CookieTool
 {
-    public String RawFileToString(Context act, int file_id) throws IOException
+    public static String RawFileToString(Context act, int file_id)
     {
         //读取Raw文件成字符串
         InputStream is = act.getResources().openRawResource(file_id);
-        byte[] buffer = new byte[1024];
-        int count = is.read(buffer);
-        return new String(buffer);
+        byte[] buffer = new byte[65536];
+        int count = 0;
+        try
+        {
+            count = is.read(buffer);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        return new String(Arrays.copyOfRange(buffer, 0, count));
     }
 
     public static void SaveCookie(Context ctt, String cookieStr)
