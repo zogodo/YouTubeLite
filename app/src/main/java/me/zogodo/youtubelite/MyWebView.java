@@ -48,8 +48,7 @@ public class MyWebView extends AdblockWebView
     {
         MyWebView.webview_stack.pop();
         MyWebView old_mywebview = MyWebView.webview_stack.peek();
-
-        MainActivity.me.setContentView(this);
+        MainActivity.me.setContentView(old_mywebview);
     }
     //endregion
 
