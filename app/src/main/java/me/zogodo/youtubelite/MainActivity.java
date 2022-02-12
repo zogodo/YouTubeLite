@@ -1,5 +1,6 @@
 package me.zogodo.youtubelite;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.webkit.WebView;
 import android.widget.Toast;
@@ -21,6 +22,13 @@ public class MainActivity extends AppCompatActivity
         MainActivity.me = this;
 
         //indexUrl = "http://nsfwyoutube.com/";
+        Intent intent = getIntent();
+        String dataString = intent.getDataString();
+        if (dataString != null)
+        {
+            indexUrl = dataString;
+        }
+
         webView = new MyWebView();
         webView.loadUrl(indexUrl);
     }
