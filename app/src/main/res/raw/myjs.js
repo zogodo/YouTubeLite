@@ -7,17 +7,22 @@ function ToBlank() {
 window.addEventListener("scroll", ToBlank);
 ToBlank();
 
+var n = 0;
 function ClickBut(query) {
     var but = document.querySelector(query);
-    console.log(query);
-    console.log(but);
+    console.log(query + ": " + but);
     if (but != null) {
         but.click();
+        return;
     }
+    if (n++ > 10) {
+        return;
+    }
+    setTimeout('ClickBut(".ytp-unmute")', 500);
 }
 ClickBut(".ytp-unmute");  /*取消静音*/
 
-const QUALITIES =  ['auto', 'tiny', 'small', 'medium', 'large', 'hd720', 'hd1080', 'hd1440', 'hd2160', 'hd2880', 'highres'];
+var QUALITIES =  ['auto', 'tiny', 'small', 'medium', 'large', 'hd720', 'hd1080', 'hd1440', 'hd2160', 'hd2880', 'highres'];
 var movie_player = document.getElementById("movie_player");
 console.log(movie_player.getPlaybackQuality());
 if (movie_player.zz_set == null) {
