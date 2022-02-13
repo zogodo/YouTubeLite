@@ -40,16 +40,8 @@ public class MyWebChromeClient extends WebChromeClient
         MainActivity.me.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         Window win = MainActivity.me.getWindow();
-        WindowManager.LayoutParams attrs = win.getAttributes();
-        attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
-        win.setAttributes(attrs);
+        win.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         win.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-        //win.getDecorView().setSystemUiVisibility(3846 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-        //win.getDecorView().setSystemUiVisibility(
-        //        View.SYSTEM_UI_FLAG_LOW_PROFILE
-        //        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-        //        | View.SYSTEM_UI_FLAG_FULLSCREEN
-        //        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         super.onShowCustomView(view, callback);
     }
 
@@ -59,9 +51,7 @@ public class MyWebChromeClient extends WebChromeClient
         MainActivity.me.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
 
         Window win = MainActivity.me.getWindow();
-        WindowManager.LayoutParams attrs = win.getAttributes();
-        attrs.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        win.setAttributes(attrs);
+        win.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         win.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
         super.onHideCustomView();
