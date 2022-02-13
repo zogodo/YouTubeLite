@@ -42,6 +42,7 @@ public class MyWebChromeClient extends WebChromeClient
         Window win = MainActivity.me.getWindow();
         win.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         win.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+
         super.onShowCustomView(view, callback);
     }
 
