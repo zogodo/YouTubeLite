@@ -29,6 +29,8 @@
                 <data android:scheme="http"  android:host="*.youtube.com" />
                 <data android:scheme="https" android:host="youtu.be" />
                 <data android:scheme="http"  android:host="youtu.be" />
+                <data android:scheme="http"  android:host="nsfwyoutube.com" />
+                <data android:scheme="https" android:host="nsfwyoutube.com" />
             </intent-filter>
         </activity>
     </application>
