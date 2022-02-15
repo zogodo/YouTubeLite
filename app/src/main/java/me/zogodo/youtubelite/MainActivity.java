@@ -40,8 +40,6 @@ public class MainActivity extends AppCompatActivity
         webView = new MyWebView();
         webView.loadUrl(indexUrl);
 
-        //Intent intent2 = new Intent(this, MyMediaBrowserServiceCompat.class);
-        //startService(intent2);
         MyNotify3();
     }
 
