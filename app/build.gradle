@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     buildToolsVersion "29.0.2"
 
     compileOptions {
@@ -11,8 +11,8 @@ android {
 
     defaultConfig {
         applicationId "me.zogodo.youtubelite"
-        minSdkVersion 26
-        targetSdkVersion 28
+        minSdkVersion 24
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
 
@@ -46,9 +46,4 @@ dependencies {
     //implementation 'org.adblockplus:adblock-android-settings:4.0'
     //implementation 'org.adblockplus:adblock-android:+'
     //implementation 'org.adblockplus:adblock-android-settings:+'
-
-    //noinspection GradleCompatible
-//    implementation 'com.android.support:support-media-compat:26.+'
-    implementation "androidx.media:media:1.2.0"
-
 }
