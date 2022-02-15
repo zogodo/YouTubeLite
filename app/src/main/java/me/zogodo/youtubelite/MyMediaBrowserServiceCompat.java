@@ -123,6 +123,9 @@ public class MyMediaBrowserServiceCompat extends MediaBrowserServiceCompat
         assert manager != null;
         manager.createNotificationChannel(chan);
 
+        // Display the notification and place the service in the foreground
+        //startForeground(1, builder.build());
+
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(
                 this, "MyChannelId");
         Notification notification = notificationBuilder.setOngoing(true)
@@ -131,10 +134,23 @@ public class MyMediaBrowserServiceCompat extends MediaBrowserServiceCompat
                 .setPriority(NotificationManager.IMPORTANCE_LOW)
                 .setCategory(Notification.CATEGORY_SERVICE)
                 .setChannelId("MyChannelId")
+                .setColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
+                // Add a pause button
+                .addAction(new NotificationCompat.Action(
+                        R.drawable.ic_launcher_foreground, "Stop Play",
+                        MediaButtonReceiver.buildMediaButtonPendingIntent(this,
+                                PlaybackStateCompat.ACTION_PLAY_PAUSE)))
+                /*
+                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                        .setMediaSession(mediaSession.getSessionToken())
+                        .setShowActionsInCompactView(0)
+                        // Add a cancel button
+                        .setShowCancelButton(true)
+                        .setCancelButtonIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(this,
+                                PlaybackStateCompat.ACTION_STOP)))
+                */
                 .build();
 
-        // Display the notification and place the service in the foreground
-        //startForeground(1, builder.build());
         startForeground(1, notification);
     }
 
