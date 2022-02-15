@@ -47,60 +47,44 @@ public class MainActivity extends AppCompatActivity
         webView = new MyWebView();
         webView.loadUrl(indexUrl);
 
-        Intent intent2 = new Intent(this, MyMediaBrowserServiceCompat.class);
-        startService(intent2);
+        //Intent intent2 = new Intent(this, MyMediaBrowserServiceCompat.class);
+        //startService(intent2);
+        MyNotify3();
     }
 
     private void MyNotify3()
     {
-        MediaSessionCompat mediaSession = new MediaSessionCompat(this, "zzMScr2");
-
-        MediaControllerCompat controller = mediaSession.getController();
-        MediaMetadataCompat mediaMetadata = controller.getMetadata();
-        MediaDescriptionCompat description = mediaMetadata.getDescription();
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "channelId");
-
-        builder
-                // Add the metadata for the currently playing track
-                .setContentTitle(description.getTitle())
-                .setContentText(description.getSubtitle())
-                .setSubText(description.getDescription())
-                .setLargeIcon(description.getIconBitmap())
-
-                // Enable launching the player by clicking the notification
-                .setContentIntent(controller.getSessionActivity())
-
-                // Stop the service when the notification is swiped away
-                .setDeleteIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(this,
-                        PlaybackStateCompat.ACTION_STOP))
-
-                // Make the transport controls visible on the lockscreen
-                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-
-                // Add an app icon and set its accent color
-                // Be careful about the color
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setColor(ContextCompat.getColor(this, R.color.colorAccent))
-
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(
+                this, "MyChannelId");
+        NotificationCompat.Builder mBuilder = notificationBuilder.setOngoing(true)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("YouTube is playing in the background")
+                .setPriority(NotificationManager.IMPORTANCE_MAX)
+                .setCategory(Notification.CATEGORY_SERVICE)
+                .setChannelId("MyChannelId")
+                .setColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
                 // Add a pause button
                 .addAction(new NotificationCompat.Action(
-                        R.drawable.ic_launcher_foreground, getString(R.string.app_name),
+                        R.drawable.ic_launcher_foreground, "Stop Play",
                         MediaButtonReceiver.buildMediaButtonPendingIntent(this,
-                                PlaybackStateCompat.ACTION_PLAY_PAUSE)))
+                                PlaybackStateCompat.ACTION_PLAY_PAUSE)));
 
-                // Take advantage of MediaStyle features
-                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
-                        .setMediaSession(mediaSession.getSessionToken())
-                        .setShowActionsInCompactView(0)
+        NotificationManager mNotificationManager =
+                (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-                        // Add a cancel button
-                        .setShowCancelButton(true)
-                        .setCancelButtonIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(this,
-                                PlaybackStateCompat.ACTION_STOP)));
+        // === Removed some obsoletes
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
+            String channelId = "Your_channel_id";
+            NotificationChannel channel = new NotificationChannel(
+                    channelId,
+                    "Channel human readable title",
+                    NotificationManager.IMPORTANCE_HIGH);
+            mNotificationManager.createNotificationChannel(channel);
+            mBuilder.setChannelId(channelId);
+        }
 
-        // Display the notification and place the service in the foreground
-        //startForeground(123, builder.build());
+        mNotificationManager.notify(0, mBuilder.build());
     }
 
     private void MyNotify1()

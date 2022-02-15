@@ -126,6 +126,9 @@ public class MyMediaBrowserServiceCompat extends MediaBrowserServiceCompat
         // Display the notification and place the service in the foreground
         //startForeground(1, builder.build());
 
+        androidx.media.app.NotificationCompat.MediaStyle mediaStyle =
+                new androidx.media.app.NotificationCompat.MediaStyle().setMediaSession(mediaSession.getSessionToken());
+
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(
                 this, "MyChannelId");
         Notification notification = notificationBuilder.setOngoing(true)
@@ -140,6 +143,7 @@ public class MyMediaBrowserServiceCompat extends MediaBrowserServiceCompat
                         R.drawable.ic_launcher_foreground, "Stop Play",
                         MediaButtonReceiver.buildMediaButtonPendingIntent(this,
                                 PlaybackStateCompat.ACTION_PLAY_PAUSE)))
+                //.setStyle(mediaStyle)
                 /*
                 .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
                         .setMediaSession(mediaSession.getSessionToken())
