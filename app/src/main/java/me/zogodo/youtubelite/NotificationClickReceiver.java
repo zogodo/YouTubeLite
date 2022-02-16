@@ -9,9 +9,8 @@ public class NotificationClickReceiver extends BroadcastReceiver
 {
     @Override
     public void onReceive(Context context, Intent intent) {
-        //todo 跳转之前要处理的逻辑
-        Log.e("TAG", "userClick:我被点击啦！！！ ");
-        //Intent newIntent = new Intent(context, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        //context.startActivity(newIntent);
+        Log.e("zzz", "notification action button clicked!");
+        MyWebView wv = MyWebView.webview_stack.peek();
+        wv.evaluateJavascript("javascript:movie_player.pauseVideo();", null);
     }
 }
