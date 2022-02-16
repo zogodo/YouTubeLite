@@ -29,3 +29,11 @@ if (movie_player != null && movie_player.zz_set == null) {
     movie_player.setPlaybackQualityRange("hd720");
     movie_player.zz_set = true;
 }
+
+function PauseOrPlay() {
+    if (movie_player.getPlayerState() == 1) {
+        movie_player.pauseVideo();
+    } else {
+        movie_player.playVideo();
+    }
+}
