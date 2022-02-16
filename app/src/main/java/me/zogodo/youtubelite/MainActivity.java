@@ -76,7 +76,6 @@ public class MainActivity extends AppCompatActivity
         bld.setContentTitle(title);
         bld.setPriority(NotificationManager.IMPORTANCE_MAX);
         bld.setCategory(Notification.CATEGORY_SERVICE);
-        bld.setChannelId(channelId);
         bld.setColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
         bld.addAction(R.drawable.youtube, "Pause / Play", pit1);
         bld.setContentIntent(pit0);
