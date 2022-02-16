@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity
     private void MyNotify()
     {
         String channelId = "channel_id";
-        String title = "Playing in the background";
+        String title = "Running in the background";
 
         Intent it0 = new Intent(this, MainActivity.class);
         PendingIntent pit0 = PendingIntent.getActivity(this, 0, it0, 0);
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity
         Intent it1 = new Intent(this, NotificationClickReceiver.class);
         PendingIntent pit1 = PendingIntent.getBroadcast(this,  0, it1, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        NotificationCompat.Builder bld = new NotificationCompat.Builder(this, "MyChannelId");
+        NotificationCompat.Builder bld = new NotificationCompat.Builder(this, channelId);
         bld.setOngoing(true);
         bld.setSmallIcon(R.mipmap.ic_launcher);
         bld.setContentTitle(title);
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity
         bld.setCategory(Notification.CATEGORY_SERVICE);
         bld.setChannelId(channelId);
         bld.setColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
-        bld.addAction(R.drawable.youtube, "Pause/Play", pit1);
+        bld.addAction(R.drawable.youtube, "Pause / Play", pit1);
         bld.setContentIntent(pit0);
 
         NotificationManager nm = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
