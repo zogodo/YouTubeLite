@@ -68,10 +68,10 @@ public class MainActivity extends AppCompatActivity
                 .setCategory(Notification.CATEGORY_SERVICE)
                 .setChannelId("MyChannelId")
                 .setColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
+                //.setContentIntent(conPendingIntent)
                 // Add a pause button
-                .addAction(new NotificationCompat.Action(
-                        R.drawable.ic_launcher_foreground, "Stop Play",
-                        pendingIntent));
+                .addAction(new NotificationCompat.Action(R.drawable.youtube, "Stop", pendingIntent))
+                .addAction(new NotificationCompat.Action(R.drawable.youtube, "Start", pendingIntent));
 
         NotificationManager mNotificationManager =
                 (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -87,8 +87,9 @@ public class MainActivity extends AppCompatActivity
             mNotificationManager.createNotificationChannel(channel);
             mBuilder.setChannelId(channelId);
         }
-
-        mNotificationManager.notify(0, mBuilder.build());
+        Notification notification = mBuilder.build();
+        notification.contentIntent = pendingIntent;
+        mNotificationManager.notify(0, notification);
     }
 
     public void cancelNotification(int notifyId)
