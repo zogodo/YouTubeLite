@@ -48,14 +48,6 @@ public class MyWebViewClient extends WebViewClient
     @Override
     public void onLoadResource(WebView view, String url)
     {
-        Log.d("zzz onLoadResource0", url);
-        if (MainActivity.indexUrl.contains("m.youtube.com")) {
-            if (!url.contains(".youtube.com/") && !url.contains(".google.com/") && !url.contains(".gstatic.com/")) {
-                Log.e("zzz onLoadResource1", url);
-                //view.stopLoading();
-                //return;
-            }
-        }
         super.onLoadResource(view, url);
     }
 

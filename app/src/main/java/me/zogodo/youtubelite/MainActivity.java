@@ -1,14 +1,18 @@
 package me.zogodo.youtubelite;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.webkit.WebView;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -57,20 +61,41 @@ public class MainActivity extends AppCompatActivity
 
     private void MyNotify()
     {
-        NotificationCompat.Builder nc = new NotificationCompat.Builder(this, "MyChannelId");
-        Intent it = new Intent(this.getApplicationContext(), MainActivity.class);
-        PendingIntent pit = PendingIntent.getActivity(this, 0, it, 0);
         String channelId = "channel_id";
         String title = "Playing in the background";
-        NotificationCompat.Builder bld = nc.setOngoing(true);
+
+        Intent it = new Intent(this, MainActivity.class);
+        //it.setAction("zgd");
+        //it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pit = PendingIntent.getActivity(this, 0, it, 0);
+
+        // for notification itself
+        //Intent notificationIntent = (new Intent()).setAction("zgd");
+        //PendingIntent notificationPendingIntent = PendingIntent.getBroadcast(this, NOTIFICATION_INTENT_REQUEST_ID, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // for action button
+        Intent actionIntent = new Intent(this, NotificationClickReceiver.class);
+        PendingIntent actionPendingIntent = PendingIntent.getBroadcast(this,  0, actionIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // execute onNotificationClick
+        //mNotificationBuilder.setContentIntent(notificationPendingIntent);
+
+        // execute onButtonClick
+        //mNotificationBuilder.addAction(R.drawable.button_icon, BUTTON_TEXT, actionPendingIntent);
+
+        NotificationCompat.Builder bld = new NotificationCompat.Builder(this, "MyChannelId");
+        bld.setOngoing(true);
         bld.setSmallIcon(R.mipmap.ic_launcher);
         bld.setContentTitle(title);
         bld.setPriority(NotificationManager.IMPORTANCE_MAX);
         bld.setCategory(Notification.CATEGORY_SERVICE);
         bld.setChannelId(channelId);
         bld.setColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
-        bld.addAction(new NotificationCompat.Action(R.drawable.youtube, "Pause", pit));
-        bld.addAction(new NotificationCompat.Action(R.drawable.youtube, "Start", pit));
+        bld.addAction(R.drawable.youtube, "Pause", actionPendingIntent);
+        //bld.addAction(R.drawable.youtube, "Start", pit);
+        //bld.setContentIntent(pit);
+        //@SuppressLint("RestrictedApi") RemoteViews rv = bld.getContentView();
+        //rv.setOnClickPendingIntent(0, pit);
 
         NotificationManager nm = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -81,8 +106,13 @@ public class MainActivity extends AppCompatActivity
             bld.setChannelId(channelId);
         }
         Notification ntf = bld.build();
-        ntf.contentIntent = pit;
+        ntf.contentIntent = pit; //bld.setContentIntent(pit)
         nm.notify(0, ntf);
+
+        //IntentFilter filter = new IntentFilter();
+        //filter.addAction("zgd");
+        //NotificationClickReceiver mReceiver = new NotificationClickReceiver();
+        //registerReceiver(mReceiver, filter);
     }
 
     public void cancelNotification(int notifyId)
@@ -90,6 +120,13 @@ public class MainActivity extends AppCompatActivity
         NotificationManager nMgr = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         nMgr.cancel(notifyId);
     }
+
+    @Override
+    protected void onNewIntent(Intent intent)
+    {
+        Log.e("a", "b");
+        super.onNewIntent(null);
+    };
 
     public void onBackPressed()
     {
