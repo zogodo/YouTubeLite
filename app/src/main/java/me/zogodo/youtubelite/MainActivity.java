@@ -39,11 +39,23 @@ public class MainActivity extends AppCompatActivity
 
         webView = new MyWebView();
         webView.loadUrl(indexUrl);
-
-        MyNotify3();
     }
 
-    private void MyNotify3()
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        cancelNotification(0);
+    }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+        MyNotify();
+    }
+
+    private void MyNotify()
     {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(
                 this, "MyChannelId");
@@ -77,6 +89,12 @@ public class MainActivity extends AppCompatActivity
         }
 
         mNotificationManager.notify(0, mBuilder.build());
+    }
+
+    public void cancelNotification(int notifyId)
+    {
+        NotificationManager nMgr = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        nMgr.cancel(notifyId);
     }
 
     public void onBackPressed()
