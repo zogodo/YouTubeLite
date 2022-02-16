@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity
         bld.setColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
         bld.addAction(R.drawable.youtube, "Pause", pit1);
         bld.addAction(R.drawable.youtube, "Start", pit1);
-        //bld.setContentIntent(pit);
+        bld.setContentIntent(pit0);
 
         NotificationManager nm = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity
             bld.setChannelId(channelId);
         }
         Notification ntf = bld.build();
-        ntf.contentIntent = pit0; //不同于bld.setContentIntent(pit)会导致按[Pause]也会启动MainActivity
+        //ntf.contentIntent = pit0;  //same as bld.setContentIntent(pit)
         nm.notify(0, ntf);
     }
 
