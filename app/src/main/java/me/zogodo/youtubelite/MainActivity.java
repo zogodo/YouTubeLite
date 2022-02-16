@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity
         bld.setCategory(Notification.CATEGORY_SERVICE);
         bld.setChannelId(channelId);
         bld.setColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
-        bld.addAction(new NotificationCompat.Action(R.drawable.youtube, "Stop", pit));
+        bld.addAction(new NotificationCompat.Action(R.drawable.youtube, "Pause", pit));
         bld.addAction(new NotificationCompat.Action(R.drawable.youtube, "Start", pit));
 
         NotificationManager nm = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
