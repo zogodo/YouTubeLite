@@ -65,23 +65,10 @@ public class MainActivity extends AppCompatActivity
         String title = "Playing in the background";
 
         Intent it = new Intent(this, MainActivity.class);
-        //it.setAction("zgd");
-        //it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pit = PendingIntent.getActivity(this, 0, it, 0);
 
-        // for notification itself
-        //Intent notificationIntent = (new Intent()).setAction("zgd");
-        //PendingIntent notificationPendingIntent = PendingIntent.getBroadcast(this, NOTIFICATION_INTENT_REQUEST_ID, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        // for action button
         Intent actionIntent = new Intent(this, NotificationClickReceiver.class);
         PendingIntent actionPendingIntent = PendingIntent.getBroadcast(this,  0, actionIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        // execute onNotificationClick
-        //mNotificationBuilder.setContentIntent(notificationPendingIntent);
-
-        // execute onButtonClick
-        //mNotificationBuilder.addAction(R.drawable.button_icon, BUTTON_TEXT, actionPendingIntent);
 
         NotificationCompat.Builder bld = new NotificationCompat.Builder(this, "MyChannelId");
         bld.setOngoing(true);
@@ -94,8 +81,6 @@ public class MainActivity extends AppCompatActivity
         bld.addAction(R.drawable.youtube, "Pause", actionPendingIntent);
         //bld.addAction(R.drawable.youtube, "Start", pit);
         //bld.setContentIntent(pit);
-        //@SuppressLint("RestrictedApi") RemoteViews rv = bld.getContentView();
-        //rv.setOnClickPendingIntent(0, pit);
 
         NotificationManager nm = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -108,11 +93,6 @@ public class MainActivity extends AppCompatActivity
         Notification ntf = bld.build();
         ntf.contentIntent = pit; //bld.setContentIntent(pit)
         nm.notify(0, ntf);
-
-        //IntentFilter filter = new IntentFilter();
-        //filter.addAction("zgd");
-        //NotificationClickReceiver mReceiver = new NotificationClickReceiver();
-        //registerReceiver(mReceiver, filter);
     }
 
     public void cancelNotification(int notifyId)
