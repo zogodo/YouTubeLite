@@ -57,39 +57,32 @@ public class MainActivity extends AppCompatActivity
 
     private void MyNotify()
     {
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(
-                this, "MyChannelId");
-        Intent ii = new Intent(this.getApplicationContext(), MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, ii, 0);
-        NotificationCompat.Builder mBuilder = notificationBuilder.setOngoing(true)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("YouTube is playing in the background")
-                .setPriority(NotificationManager.IMPORTANCE_MAX)
-                .setCategory(Notification.CATEGORY_SERVICE)
-                .setChannelId("MyChannelId")
-                .setColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
-                //.setContentIntent(conPendingIntent)
-                // Add a pause button
-                .addAction(new NotificationCompat.Action(R.drawable.youtube, "Stop", pendingIntent))
-                .addAction(new NotificationCompat.Action(R.drawable.youtube, "Start", pendingIntent));
+        NotificationCompat.Builder nc = new NotificationCompat.Builder(this, "MyChannelId");
+        Intent it = new Intent(this.getApplicationContext(), MainActivity.class);
+        PendingIntent pit = PendingIntent.getActivity(this, 0, it, 0);
+        String channelId = "channel_id";
+        String title = "Playing in the background";
+        NotificationCompat.Builder bld = nc.setOngoing(true);
+        bld.setSmallIcon(R.mipmap.ic_launcher);
+        bld.setContentTitle(title);
+        bld.setPriority(NotificationManager.IMPORTANCE_MAX);
+        bld.setCategory(Notification.CATEGORY_SERVICE);
+        bld.setChannelId(channelId);
+        bld.setColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+        bld.addAction(new NotificationCompat.Action(R.drawable.youtube, "Stop", pit));
+        bld.addAction(new NotificationCompat.Action(R.drawable.youtube, "Start", pit));
 
-        NotificationManager mNotificationManager =
-                (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager nm = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // === Removed some obsoletes
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
         {
-            String channelId = "Your_channel_id";
-            NotificationChannel channel = new NotificationChannel(
-                    channelId,
-                    "Channel human readable title",
-                    NotificationManager.IMPORTANCE_HIGH);
-            mNotificationManager.createNotificationChannel(channel);
-            mBuilder.setChannelId(channelId);
+            NotificationChannel channel = new NotificationChannel(channelId, title, NotificationManager.IMPORTANCE_HIGH);
+            nm.createNotificationChannel(channel);
+            bld.setChannelId(channelId);
         }
-        Notification notification = mBuilder.build();
-        notification.contentIntent = pendingIntent;
-        mNotificationManager.notify(0, notification);
+        Notification ntf = bld.build();
+        ntf.contentIntent = pit;
+        nm.notify(0, ntf);
     }
 
     public void cancelNotification(int notifyId)
