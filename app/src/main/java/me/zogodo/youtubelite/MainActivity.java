@@ -64,11 +64,11 @@ public class MainActivity extends AppCompatActivity
         String channelId = "channel_id";
         String title = "Playing in the background";
 
-        Intent it = new Intent(this, MainActivity.class);
-        PendingIntent pit = PendingIntent.getActivity(this, 0, it, 0);
+        Intent it0 = new Intent(this, MainActivity.class);
+        PendingIntent pit0 = PendingIntent.getActivity(this, 0, it0, 0);
 
-        Intent actionIntent = new Intent(this, NotificationClickReceiver.class);
-        PendingIntent actionPendingIntent = PendingIntent.getBroadcast(this,  0, actionIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent it1 = new Intent(this, NotificationClickReceiver.class);
+        PendingIntent pit1 = PendingIntent.getBroadcast(this,  0, it1, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder bld = new NotificationCompat.Builder(this, "MyChannelId");
         bld.setOngoing(true);
@@ -78,8 +78,8 @@ public class MainActivity extends AppCompatActivity
         bld.setCategory(Notification.CATEGORY_SERVICE);
         bld.setChannelId(channelId);
         bld.setColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
-        bld.addAction(R.drawable.youtube, "Pause", actionPendingIntent);
-        //bld.addAction(R.drawable.youtube, "Start", pit);
+        bld.addAction(R.drawable.youtube, "Pause", pit1);
+        bld.addAction(R.drawable.youtube, "Start", pit1);
         //bld.setContentIntent(pit);
 
         NotificationManager nm = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity
             bld.setChannelId(channelId);
         }
         Notification ntf = bld.build();
-        ntf.contentIntent = pit; //bld.setContentIntent(pit)
+        ntf.contentIntent = pit0; //不同于bld.setContentIntent(pit)会导致按[Pause]也会启动MainActivity
         nm.notify(0, ntf);
     }
 
