@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity
 
         NotificationCompat.Builder bld = new NotificationCompat.Builder(this, channelId);
         bld.setOngoing(true);
-        bld.setSmallIcon(R.mipmap.ic_launcher);
+        bld.setSmallIcon(R.drawable.youtube);
         bld.setContentTitle(title);
         bld.setPriority(NotificationManager.IMPORTANCE_MAX);
         bld.setCategory(Notification.CATEGORY_SERVICE);
