@@ -3,9 +3,16 @@ function ToBlank() {
     for (var i = 0; i < links.length; i++) {
         links[i].target = "_blank";
     }
+    return links.length > 0
 }
-window.addEventListener("scroll", ToBlank);
-ToBlank();
+function ToBlankLoop() {
+    if (ToBlank()) {
+        window.addEventListener("scroll", ToBlank);
+        return;
+    }
+    setTimeout("ToBlankLoop()", 500);
+}
+ToBlankLoop();
 
 var n = 0;
 function ClickBut(query) {

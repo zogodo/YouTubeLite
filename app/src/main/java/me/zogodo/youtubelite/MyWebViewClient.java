@@ -21,7 +21,7 @@ public class MyWebViewClient extends WebViewClient
     @Override
     public void doUpdateVisitedHistory(WebView view, String url, boolean isReload)
     {
-        Log.e("zzz doUpdateVisitedHistory", url);
+        Log.e("zzz doUpdateVisitedHistory", mywebview.hashCode() + " " + url);
         super.doUpdateVisitedHistory(view, url, isReload);
     }
 
@@ -29,13 +29,13 @@ public class MyWebViewClient extends WebViewClient
     @TargetApi(Build.VERSION_CODES.N)
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest req)
     {
-        Log.e("zzz shouldOverrideUrlLoading", req.getUrl().toString());
+        Log.e("zzz shouldOverrideUrlLoading", mywebview.hashCode() + " " + req.getUrl().toString());
         return false;
     }
 
     public void onPageStarted(WebView view, String url, Bitmap favicon)
     {
-        Log.e("zzz onPageStarted", url);
+        Log.e("zzz onPageStarted", mywebview.hashCode() + " " + url);
         /*
         String cookieStr = CookieTool.ReadCookie(MainActivity.me);
         CookieManager cookieManager = CookieManager.getInstance();
