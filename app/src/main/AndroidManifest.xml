@@ -28,12 +28,11 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="*.github.io" />
                 <data android:scheme="https" android:host="*.youtube.com" />
-                <data android:scheme="http"  android:host="*.youtube.com" />
                 <data android:scheme="https" android:host="youtu.be" />
-                <data android:scheme="http"  android:host="youtu.be" />
-                <data android:scheme="http"  android:host="nsfwyoutube.com" />
                 <data android:scheme="https" android:host="nsfwyoutube.com" />
+                <data android:scheme="https" android:host="z" />
             </intent-filter>
         </activity>
         <receiver android:name=".NotificationClickReceiver">

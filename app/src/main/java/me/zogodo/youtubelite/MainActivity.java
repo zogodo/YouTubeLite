@@ -34,12 +34,15 @@ public class MainActivity extends AppCompatActivity
         MainActivity.me = this;
 
         //indexUrl = "http://nsfwyoutube.com/";
+        indexUrl = "https://zogodo.github.io/goto.html";
         Intent intent = getIntent();
         String dataString = intent.getDataString();
         if (dataString != null)
         {
+            dataString = dataString.replaceAll("://z/", "://");
             indexUrl = dataString;
         }
+        Log.e("zurl", indexUrl, null);
 
         webView = new MyWebView();
         webView.loadUrl(indexUrl);
