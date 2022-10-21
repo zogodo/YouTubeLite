@@ -1,18 +1,16 @@
 package me.zogodo.youtubelite;
 
-import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.webkit.WebView;
-import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,7 +21,7 @@ public class MainActivity extends AppCompatActivity
 {
     public static MainActivity me;
     public static String indexUrl = "https://m.youtube.com";
-    WebView webView = null;
+    public static WebView webView = null;
     long exitTime = 0;
 
     @Override
@@ -108,6 +106,13 @@ public class MainActivity extends AppCompatActivity
         Log.e("a", "b");
         super.onNewIntent(null);
     };
+
+    @Override
+    public void setContentView(View view)
+    {
+        webView = (MyWebView)view;
+        super.setContentView(view);
+    }
 
     public void onBackPressed()
     {

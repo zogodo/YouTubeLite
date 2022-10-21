@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import org.adblockplus.libadblockplus.android.webview.AdblockWebView;
@@ -31,6 +32,8 @@ public class MyWebView extends AdblockWebView
             MyWebView.myJs = CookieTool.RawFileToString(MainActivity.me, R.raw.myjs);
         }
         MyWebView.webview_stack.push(this);
+        MainActivity.me.setContentView(this);
+        //MainActivity.webView = this;
         this.WebViewInit();
     }
     public MyWebView(Context context, AttributeSet attrs)
@@ -42,10 +45,16 @@ public class MyWebView extends AdblockWebView
     //region goBack
     public boolean canGoBack()
     {
-        return MyWebView.webview_stack.size() > 1;
+        Log.e("zzz " + this.hashCode(), "canGoBack " + MyWebView.webview_stack.size() + super.canGoBack());
+        return MyWebView.webview_stack.size() > 1 || super.canGoBack();
     }
     public void goBack()
     {
+        Log.e("zzz " + this.hashCode(), "goBack " + MyWebView.webview_stack.size() + super.canGoBack());
+        if (super.canGoBack()) {
+            super.goBack();
+            return;
+        }
         MyWebView.webview_stack.pop();
         MyWebView old_mywebview = MyWebView.webview_stack.peek();
         MainActivity.me.setContentView(old_mywebview);
@@ -56,7 +65,6 @@ public class MyWebView extends AdblockWebView
     public void loadUrl(String url)
     {
         super.loadUrl(url);
-        MainActivity.me.setContentView(this);
     }
 
     //https://stackoverflow.com/questions/52028940

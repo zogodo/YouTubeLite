@@ -25,6 +25,8 @@ public class MyWebChromeClient extends WebChromeClient
     @Override
     public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg)
     {
+        Log.e("zzz " + view.hashCode(), "onCreateWindow");
+
         MyWebView new_mywebview = new MyWebView();
         WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
         transport.setWebView(new_mywebview);
