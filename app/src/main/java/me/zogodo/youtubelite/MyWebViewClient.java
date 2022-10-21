@@ -21,6 +21,9 @@ public class MyWebViewClient extends WebViewClient
     @Override
     public void doUpdateVisitedHistory(WebView view, String url, boolean isReload)
     {
+        //正常情况下youtube点击视频播放时,仅仅是修改了url,并不能触发shouldOverrideUrlLoading()
+        //此时的网页变化是由js修改的,安卓无法介入,view.stopLoading()没用.
+        //解决办法时把所有<a>的taget都改成_blank,使用新窗口打开.
         Log.e("zzz " + mywebview.hashCode(), "doUpdateVisitedHistory " + url);
         super.doUpdateVisitedHistory(view, url, isReload);
     }

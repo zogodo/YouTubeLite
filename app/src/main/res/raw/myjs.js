@@ -10,7 +10,7 @@ function ToBlankLoop() {
         window.addEventListener("scroll", ToBlank);
         return;
     }
-    setTimeout("ToBlankLoop()", 500);
+    setTimeout("ToBlankLoop()", 100);
 }
 ToBlankLoop();
 
