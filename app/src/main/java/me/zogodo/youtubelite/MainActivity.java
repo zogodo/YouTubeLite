@@ -108,7 +108,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void setContentView(View view)
     {
-        webView = (MyWebView)view;
+        if (view instanceof MyWebView)
+        {
+            webView = (MyWebView)view;
+        }
         super.setContentView(view);
     }
 
