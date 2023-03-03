@@ -20,7 +20,7 @@ import androidx.core.content.ContextCompat;
 public class MainActivity extends AppCompatActivity
 {
     public static MainActivity me;
-    public static String indexUrl = "https://m.youtube.com";
+    public static String indexUrl = "file:///android_asset/goto.html";
     public static WebView webView = null;
     long exitTime = 0;
 
@@ -31,8 +31,6 @@ public class MainActivity extends AppCompatActivity
         getSupportActionBar().hide();
         MainActivity.me = this;
 
-        //indexUrl = "http://nsfwyoutube.com/";
-        indexUrl = "https://zogodo.github.io/goto.html";
         Intent intent = getIntent();
         String dataString = intent.getDataString();
         if (dataString != null)

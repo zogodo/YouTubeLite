@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="author" content="zogodo">
+    <meta name="description" content="我们之所以奋斗, 不是为了改变世界, 而是不让世界改变我们">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <title>果冻のBlog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            text-align: center;
+            line-height: 3em;
+        }
+        a {
+            display: block;
+        }
+        input, button {
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        input {
+            width: 100%;
+            box-sizing:border-box;
+            border-color: black;
+            border-width: 1px;
+        }
+        button {
+            background-color:#159957;
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <a href="https://m.youtube.com">YouTube</a>
+    <a href="https://tv.cctv.com/live/cctv13/m/">CCTV-13</a>
+    <a href="https://www.ganjing.com/zh-CN">干净世界</a>
+    <a href="http://nsfwyoutube.com">NSFW YouTube</a>
+    <input id="url" value="https://m.youtube.com" placeholder="URL" onclick="SelectAll()" onkeypress="event.which==13?Goto():0"/>
+    <button onclick="Goto()">Go to</button>
+</body>
+<script>
+    var first = true;
+    function SelectAll() {
+        if (!first) {
+            return
+        }
+        first = false;
+        url.selectionStart = 0;
+        url.selectionEnd = url.value.length;
+    }
+    function Goto() {
+        if (!url.value.startsWith("http")) {
+            url.value = "http://" + url.value;
+        }
+        location.href = url.value;
+    }
+</script>
+</html>

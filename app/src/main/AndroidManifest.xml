@@ -32,6 +32,8 @@
                 <data android:scheme="https" android:host="*.youtube.com" />
                 <data android:scheme="https" android:host="youtu.be" />
                 <data android:scheme="https" android:host="nsfwyoutube.com" />
+                <data android:scheme="https" android:host="landofhope.tv" />
+                <data android:scheme="https" android:host="*.landofhope.tv" />
                 <data android:scheme="https" android:host="z" />
             </intent-filter>
         </activity>
