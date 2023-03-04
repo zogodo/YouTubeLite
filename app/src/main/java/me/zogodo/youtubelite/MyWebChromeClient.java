@@ -31,7 +31,9 @@ public class MyWebChromeClient extends WebChromeClient
         WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
         transport.setWebView(new_mywebview);
         resultMsg.sendToTarget();
-        new_mywebview.loadUrl(MainActivity.indexUrl); //TODO ?
+        //TODO 这里不知道为什么需要load一次url, 而且这个url不能是本地的!
+        //如果是本地url的话有时候会出现错误: New WebView for popup window must not have been previously navigated
+        new_mywebview.loadUrl("https://youtube.com");
         return true;
     }
 
