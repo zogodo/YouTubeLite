@@ -7,6 +7,10 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
+        html {
+            display: table;
+            width: 100%;
+        }
         html, body {
             height: 100%;
             padding: 0;
@@ -15,10 +19,6 @@
         body {
             text-align: center;
             line-height: 3em;
-            display: table;
-            width: 100%;
-        }
-        .middle {
             display: table-cell;
             vertical-align: middle;
         }
@@ -43,14 +43,12 @@
     </style>
 </head>
 <body>
-<div class="middle">
     <a href="https://m.youtube.com">YouTube</a>
     <a href="https://tv.cctv.com/live/cctv13/m/">CCTV-13</a>
     <a href="https://www.ganjing.com/zh-CN">干净世界</a>
     <a href="http://nsfwyoutube.com">NSFW YouTube</a>
     <input id="url" value="https://m.youtube.com" placeholder="URL" onclick="SelectAll()" onkeypress="event.which==13?Goto():0"/>
     <button onclick="Goto()">Go to</button>
-</div>
 </body>
 <script>
     var first = true;
