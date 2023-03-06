@@ -7,6 +7,9 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
+        * {
+            font-size: 1em;
+        }
         html {
             display: table;
             width: 100%;
@@ -22,15 +25,26 @@
             display: table-cell;
             vertical-align: middle;
         }
+        fieldset {
+            color: #666;
+            margin: 0 20px;
+            border: 1px solid #dee3eb;
+        }
         a {
-            display: block;
+            width: 35%;
+            display: inline-block;
+            padding-left: 37px;
+            line-height: 1.5em;
+            background-image: url('https://www.youtube.com/s/desktop/32c4e480/img/favicon_32x32.png');
+            background-repeat: no-repeat;
+            background-position-y: center;
         }
         input, button {
             padding: 5px 10px;
             border-radius: 5px;
         }
         input {
-            width: 90%;
+            width: 70%;
             box-sizing:border-box;
             border-color: black;
             border-width: 1px;
@@ -43,10 +57,13 @@
     </style>
 </head>
 <body>
-    <a href="https://m.youtube.com">YouTube</a>
-    <a href="https://tv.cctv.com/live/cctv13/m/">CCTV-13</a>
-    <a href="https://www.ganjing.com/zh-CN">干净世界</a>
-    <a href="http://nsfwyoutube.com">NSFW YouTube</a>
+    <fieldset>
+        <legend>常用链接</legend>
+        <a href="https://m.youtube.com">YouTube</a>
+        <a href="https://tv.cctv.com/live/cctv13/m/">CCTV-13</a>
+        <a href="https://www.ganjing.com/zh-CN">干净世界</a>
+        <a href="http://nsfwyoutube.com">NSFW YouTube</a>
+    </fieldset>
     <input id="url" value="https://m.youtube.com" placeholder="URL" onclick="SelectAll()" onkeypress="event.which==13?Goto():0"/>
     <button onclick="Goto()">Go to</button>
 </body>
