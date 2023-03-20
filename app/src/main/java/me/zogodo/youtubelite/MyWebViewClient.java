@@ -4,7 +4,10 @@ import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.Log;
-import android.webkit.*;
+import android.webkit.CookieManager;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 /**
  * Created by zogod on 17/2/19.
@@ -39,12 +42,13 @@ public class MyWebViewClient extends WebViewClient
     public void onPageStarted(WebView view, String url, Bitmap favicon)
     {
         Log.e("zzz " + mywebview.hashCode(), "onPageStarted " + url);
-        /*
-        String cookieStr = CookieTool.ReadCookie(MainActivity.me);
+
+        String domain = url.replaceAll("https?://(www.)?([^/]+).*", "$2");
+        String cookieStr = CookieTool.ReadCookie(MainActivity.me, domain);
         CookieManager cookieManager = CookieManager.getInstance();
         cookieManager.setAcceptCookie(true);
         cookieManager.setCookie(url, cookieStr);
-        */
+
         super.onPageStarted(view, url, favicon);
     }
 
@@ -61,12 +65,11 @@ public class MyWebViewClient extends WebViewClient
         this.mywebview.loadUrl("javascript:" + MyWebView.myJs);
         this.mywebview.injectCSS();
 
-        /*
         CookieManager cookieManager = CookieManager.getInstance();
         cookieManager.setAcceptCookie(true);
         String cookieStr = cookieManager.getCookie(url);
-        CookieTool.SaveCookie(MainActivity.me, cookieStr);
-        */
+        String domain = url.replaceAll("https?://(www.)?([^/]+).*", "$2");
+        CookieTool.SaveCookie(MainActivity.me, cookieStr, domain);
 
         super.onPageFinished(view, url);
     }

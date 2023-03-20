@@ -30,14 +30,14 @@ public class CookieTool
         return new String(Arrays.copyOfRange(buffer, 0, count));
     }
 
-    public static void SaveCookie(Context ctt, String cookieStr)
+    public static void SaveCookie(Context ctt, String cookieStr, String domain)
     {
+        String filePath = ctt.getFilesDir().getPath() + "/" + domain;
+        Log.e("zzz Cookie w", filePath + " | " + cookieStr);
         if (cookieStr == null)
         {
             return;
         }
-        String filePath = ctt.getFilesDir().getPath() + "/cookie";
-        Log.e("zzz Cookie ", filePath + " | " + cookieStr);
         BufferedWriter writer;
         try
         {
@@ -51,9 +51,9 @@ public class CookieTool
         }
     }
 
-    public static String ReadCookie(Context ctt)
+    public static String ReadCookie(Context ctt, String domain)
     {
-        String filePath = ctt.getFilesDir().getPath() + "/cookie";
+        String filePath = ctt.getFilesDir().getPath() + "/" + domain;
         File file = new File(filePath);
         long fileLength = file.length();
         byte[] fileContent = new byte[(int)fileLength];
@@ -67,6 +67,8 @@ public class CookieTool
         {
             e.printStackTrace();
         }
-        return new String(fileContent);
+        String cookieStr = new String(fileContent);
+        Log.e("zzz Cookie r", filePath + " | " + cookieStr);
+        return cookieStr;
     }
 }
