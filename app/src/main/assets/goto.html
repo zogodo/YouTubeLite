@@ -42,20 +42,24 @@
             line-height: 32px;
             white-space: nowrap;
         }
+        table {
+            width: 100%;
+            padding: 0 17px;
+        }
         input, button {
-            padding: 5px 10px;
-            border-radius: 5px;
+            width: 100%;
+            padding: 6px 10px;
+            border-radius: 0;
         }
         input {
-            width: 70%;
+            color: #555;
             box-sizing:border-box;
-            border-color: black;
-            border-width: 1px;
+            border: 1px solid #dee3eb;
         }
         button {
-            background-color:#159957;
+            background-color: #159957;
+            border: 1px #159957 solid;
             color: white;
-            border: none;
         }
     </style>
 </head>
@@ -70,8 +74,18 @@
         <a href="https://www.ganjing.io/zh-CN" style="background-image: url(https://www.ganjing.com/icons/favicon.ico)">干净世界2</a>
         <a href="http://nsfwyoutube.com" style="background-image: url(http://nsfwyoutube.com/favicon.ico)">NSFW YouTube</a>
     </fieldset>
-    <input id="url" value="https://m.youtube.com" placeholder="URL" onclick="SelectAll()" onkeypress="event.which==13?Goto():0"/>
-    <button onclick="Goto()">Go to</button>
+    <table>
+        <tr>
+            <td style="width: 75%;">
+                <input id="url" value="https://m.youtube.com" placeholder="URL" onclick="SelectAll()" onkeypress="event.which==13?Goto():0"/>
+            </td>
+            <td style="width: 4%;">
+            </td>
+            <td>
+                <button onclick="Goto()">Go to</button>
+            </td>
+        </tr>
+    </table>
 </body>
 <script>
     var first = true;
