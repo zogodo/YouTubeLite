@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity
     public static String indexUrl = "file:///android_asset/goto.html";
     public static WebView webView = null;
     long exitTime = 0;
+    int notifyId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -48,13 +49,15 @@ public class MainActivity extends AppCompatActivity
     public void onResume()
     {
         super.onResume();
-        cancelNotification(0);
+        Log.e("noti", "onResume");
+        cancelNotification(notifyId);
     }
 
     @Override
     public void onPause()
     {
         super.onPause();
+        Log.e("noti", "onPause");
         MyNotify();
     }
 
@@ -89,19 +92,21 @@ public class MainActivity extends AppCompatActivity
         }
         Notification ntf = bld.build();
         //ntf.contentIntent = pit0;  //same as bld.setContentIntent(pit)
-        nm.notify(0, ntf);
+        assert nm != null;
+        nm.notify(notifyId, ntf);
     }
 
     public void cancelNotification(int notifyId)
     {
         NotificationManager nMgr = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        assert nMgr != null;
         nMgr.cancel(notifyId);
     }
 
     @Override
     protected void onNewIntent(Intent intent)
     {
-        Log.e("a", "b");
+        Log.e("a", "onNewIntent");
         super.onNewIntent(null);
     };
 
@@ -135,5 +140,21 @@ public class MainActivity extends AppCompatActivity
                 System.exit(0);
             }
         }
+    }
+
+    @Override
+    public void onStop()
+    {
+        Log.e("noti", "onStop");
+        //cancelNotification(notifyId);
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        Log.e("noti", "onDestroy");
+        cancelNotification(notifyId);
+        super.onDestroy();
     }
 }
