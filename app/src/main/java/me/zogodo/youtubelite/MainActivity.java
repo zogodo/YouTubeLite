@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -43,6 +44,16 @@ public class MainActivity extends AppCompatActivity
 
         webView = new MyWebView();
         webView.loadUrl(indexUrl);
+
+        openRawMusicS();
+    }
+
+    private MediaPlayer mediaPlayer1;
+    private void openRawMusicS() {
+        mediaPlayer1 = MediaPlayer.create(this, R.raw.kano);
+        mediaPlayer1.start();
+        mediaPlayer1.setLooping(true);
+        mediaPlayer1.stop();
     }
 
     @Override
