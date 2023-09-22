@@ -50,10 +50,10 @@ public class MainActivity extends AppCompatActivity
 
     private MediaPlayer mediaPlayer1;
     private void openRawMusicS() {
-        mediaPlayer1 = MediaPlayer.create(this, R.raw.kano);
+        mediaPlayer1 = MediaPlayer.create(this, R.raw.va_kano);
         mediaPlayer1.start();
         mediaPlayer1.setLooping(true);
-        mediaPlayer1.stop();
+        //mediaPlayer1.stop();
     }
 
     @Override
