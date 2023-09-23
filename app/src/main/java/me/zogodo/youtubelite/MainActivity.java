@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity
         MediaSession mediaSession = new MediaSession(this, "PlayerService");
 
         MediaStyle mediaStyle = new MediaStyle();
+        mediaStyle.setShowActionsInCompactView(0);  //折叠后还显示第一个icon 如果要显示多个可以写 (0, 1) 最多三个
         mediaStyle.setMediaSession(mediaSession.getSessionToken());
 
         Intent it0 = new Intent(this, MainActivity.class);
@@ -109,28 +110,31 @@ public class MainActivity extends AppCompatActivity
 
     private void MyMediaNotify()
     {
+        MediaSessionCompat mediaSession = new MediaSessionCompat(this, "PlayerService");
+
+        androidx.media.app.NotificationCompat.MediaStyle mediaStyle = new androidx.media.app.NotificationCompat.MediaStyle();
+        mediaStyle.setShowActionsInCompactView(0); //折叠后还显示第一个icon 如果要显示多个可以写 (0, 1) 最多三个
+        mediaStyle.setMediaSession(mediaSession.getSessionToken());
+
         Intent it0 = new Intent(this, MainActivity.class);
         PendingIntent pit0 = PendingIntent.getActivity(this, 0, it0, 0);
 
         Intent it1 = new Intent(this, NotificationClickReceiver.class);
         PendingIntent pit1 = PendingIntent.getBroadcast(this,  0, it1, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        MediaSessionCompat mediaSession2 = new MediaSessionCompat(this, "PlayerService");
-
-        Notification notification = new NotificationCompat.Builder(this, "channel_id")
-                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                .setSmallIcon(R.drawable.ic_youtube)
-                //.addAction(R.drawable.ic_prev, "Previous", prevPendingIntent)
-                .addAction(R.drawable.ic_pause, "Pause", pit1)
-                //.addAction(R.drawable.ic_next, "Next", nextPendingIntent)
-                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
-                        .setShowActionsInCompactView(1 /* #1: pause button */)
-                        .setMediaSession(mediaSession2.getSessionToken()))
-                .setContentTitle("Wonderful music")
-                .setContentText("My Awesome Band")
+        NotificationCompat.Builder bld = new NotificationCompat.Builder(this, "channel_id");
+        bld.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+        bld.setSmallIcon(R.drawable.ic_youtube);
+        //bld.addAction(R.drawable.ic_prev, "Previous", prevPendingIntent)
+        bld.addAction(R.drawable.ic_pause, "Pause", pit1);
+        //bld.addAction(R.drawable.ic_next, "Next", nextPendingIntent)
+        bld.setStyle(mediaStyle);
+        bld.setContentTitle("Wonderful music");
+        bld.setContentText("My Awesome Band");
                 //.setLargeIcon(albumArtBitmap)
-                .setContentIntent(pit0)
-                .build();
+        bld.setContentIntent(pit0);
+
+        Notification notification = bld.build();
 
         NotificationManager nm = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
         assert nm != null;
