@@ -7,6 +7,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Icon;
 import android.media.MediaPlayer;
 import android.media.session.MediaSession;
 import android.os.Build;
@@ -91,8 +92,12 @@ public class MainActivity extends AppCompatActivity
         bld1.setStyle(mediaStyle);
         bld1.setContentTitle("MyMediaNotify");
         bld1.setSmallIcon(R.drawable.ic_youtube);
-        bld1.addAction(R.drawable.ic_pause, "Pause", pit1);
+        //bld1.addAction(R.drawable.ic_pause, "Pause", pit1);
         bld1.setContentIntent(pit0);
+
+        Icon ic = Icon.createWithResource(this, R.drawable.ic_pause);
+        Notification.Action action = new Notification.Action.Builder(ic, "Pause", pit1).build();
+        bld1.addAction(action);
 
         Notification notification = bld1.build();
 
