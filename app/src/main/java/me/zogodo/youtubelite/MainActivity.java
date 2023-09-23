@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity
         bld1.setStyle(mediaStyle);
         bld1.setContentTitle("MyMediaNotify");
         bld1.setSmallIcon(R.drawable.ic_youtube);
-        bld1.addAction(R.drawable.ic_youtube, "Pause", pit1);
+        bld1.addAction(R.drawable.test, "Pause", pit1);
         bld1.setContentIntent(pit0);
 
         Notification notification = bld1.build();
