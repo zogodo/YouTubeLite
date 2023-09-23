@@ -1,7 +1,6 @@
 package me.zogodo.youtubelite;
 
 import android.app.Notification;
-//import android.app.Notification.MediaStyle;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -71,11 +70,23 @@ public class MainActivity extends AppCompatActivity
     {
         super.onPause();
         Log.e("noti", "onPause");
-        MyNotify();
+        MyMediaNotify();
+        //MyNotify();
     }
 
     private void MyMediaNotify()
     {
+        NotificationManager nm = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        NotificationCompat.Builder bld = new NotificationCompat.Builder(this, "channel_id");
+        bld.setSmallIcon(R.drawable.ic_youtube);
+        bld.setStyle(new MediaStyle().setMediaSession(null));
+
+        Notification ntf = bld.build();
+        assert nm != null;
+        nm.notify(notifyId, ntf);
+
+        /*
         Notification noti = new NotificationCompat.Builder(this, "aabbzz")
                 .setSmallIcon(R.drawable.ic_youtube)
                 .setContentTitle("Track title")
@@ -84,6 +95,8 @@ public class MainActivity extends AppCompatActivity
                 .setStyle(new MediaStyle()
                     .setMediaSession(null))
                 .build();
+        assert nm != null;
+        nm.notify(notifyId+1, noti);
 
         /*
         NotificationCompat.Builder notificationBuilder =
