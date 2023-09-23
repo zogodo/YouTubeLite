@@ -1,6 +1,7 @@
 package me.zogodo.youtubelite;
 
 import android.app.Notification;
+//import android.app.Notification.MediaStyle;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
+import androidx.media.app.NotificationCompat.MediaStyle;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -72,6 +74,42 @@ public class MainActivity extends AppCompatActivity
         MyNotify();
     }
 
+    private void MyMediaNotify()
+    {
+        Notification noti = new NotificationCompat.Builder(this, "aabbzz")
+                .setSmallIcon(R.drawable.ic_youtube)
+                .setContentTitle("Track title")
+                .setContentText("Artist - Album")
+                //.setLargeIcon(R.drawable.ic_youtube)
+                .setStyle(new MediaStyle()
+                    .setMediaSession(null))
+                .build();
+
+        /*
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(mContext, CHANNEL_ID);
+        notificationBuilder
+                .setStyle(
+                        new MediaStyle()
+                                .setMediaSession(token)
+                                .setShowCancelButton(true)
+                                .setCancelButtonIntent(
+                                        MediaButtonReceiver.buildMediaButtonPendingIntent(
+                                                mContext, PlaybackStateCompat.ACTION_STOP)))
+                .setColor(ContextCompat.getColor(mContext, R.color.notification_bg))
+                .setSmallIcon(R.drawable.ic_stat_image_audiotrack)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setOnlyAlertOnce(true)
+                .setContentIntent(createContentIntent())
+                .setContentTitle("Album")
+                .setContentText("Artist")
+                .setSubText("Song Name")
+                .setLargeIcon(MusicLibrary.getAlbumBitmap(mContext, description.getMediaId()))
+                .setDeleteIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(
+                        mService, PlaybackStateCompat.ACTION_STOP));
+        */
+    }
+
     private void MyNotify()
     {
         String channelId = "channel_id";
@@ -92,6 +130,7 @@ public class MainActivity extends AppCompatActivity
         bld.setColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
         bld.addAction(R.drawable.ic_youtube, "Pause / Play", pit1);
         bld.setContentIntent(pit0);
+        //bld.setCustomBigContentView();
 
         NotificationManager nm = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
 

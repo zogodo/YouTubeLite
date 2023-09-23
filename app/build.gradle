@@ -46,4 +46,6 @@ dependencies {
     //implementation 'org.adblockplus:adblock-android-settings:4.0'
     //implementation 'org.adblockplus:adblock-android:+'
     //implementation 'org.adblockplus:adblock-android-settings:+'
+
+    implementation 'androidx.media:media:1.3.0'
 }
