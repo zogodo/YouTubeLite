@@ -12,6 +12,7 @@ import android.media.MediaPlayer;
 import android.media.session.MediaSession;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.media.session.MediaSessionCompat;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity
         MyMediaNotify();
     }
 
-    private void MyMediaNotify()
+    private void MyMediaNotify0()
     {
         MediaSession mediaSession = new MediaSession(this, "PlayerService");
 
@@ -100,6 +101,36 @@ public class MainActivity extends AppCompatActivity
         bld1.addAction(action);
 
         Notification notification = bld1.build();
+
+        NotificationManager nm = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
+        assert nm != null;
+        nm.notify(notifyId, notification);
+    }
+
+    private void MyMediaNotify()
+    {
+        Intent it0 = new Intent(this, MainActivity.class);
+        PendingIntent pit0 = PendingIntent.getActivity(this, 0, it0, 0);
+
+        Intent it1 = new Intent(this, NotificationClickReceiver.class);
+        PendingIntent pit1 = PendingIntent.getBroadcast(this,  0, it1, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        MediaSessionCompat mediaSession2 = new MediaSessionCompat(this, "PlayerService");
+
+        Notification notification = new NotificationCompat.Builder(this, "channel_id")
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setSmallIcon(R.drawable.ic_youtube)
+                //.addAction(R.drawable.ic_prev, "Previous", prevPendingIntent)
+                .addAction(R.drawable.ic_pause, "Pause", pit1)
+                //.addAction(R.drawable.ic_next, "Next", nextPendingIntent)
+                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                        .setShowActionsInCompactView(1 /* #1: pause button */)
+                        .setMediaSession(mediaSession2.getSessionToken()))
+                .setContentTitle("Wonderful music")
+                .setContentText("My Awesome Band")
+                //.setLargeIcon(albumArtBitmap)
+                .setContentIntent(pit0)
+                .build();
 
         NotificationManager nm = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
         assert nm != null;
