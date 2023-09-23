@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity
         super.onPause();
         Log.e("noti", "onPause");
         MyMediaNotify();
-        //MyNotify();
     }
 
     private void MyMediaNotify()
@@ -82,10 +81,19 @@ public class MainActivity extends AppCompatActivity
         MediaStyle mediaStyle = new MediaStyle();
         mediaStyle.setMediaSession(mediaSession.getSessionToken());
 
+        Intent it0 = new Intent(this, MainActivity.class);
+        PendingIntent pit0 = PendingIntent.getActivity(this, 0, it0, 0);
+
+        Intent it1 = new Intent(this, NotificationClickReceiver.class);
+        PendingIntent pit1 = PendingIntent.getBroadcast(this,  0, it1, PendingIntent.FLAG_UPDATE_CURRENT);
+
         Notification.Builder bld1 = new Notification.Builder(this, "channel_id");
         bld1.setStyle(mediaStyle);
         bld1.setContentTitle("MyMediaNotify");
         bld1.setSmallIcon(R.drawable.ic_youtube);
+        bld1.addAction(R.drawable.ic_youtube, "Pause", pit1);
+        bld1.setContentIntent(pit0);
+
         Notification notification = bld1.build();
 
         NotificationManager nm = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
