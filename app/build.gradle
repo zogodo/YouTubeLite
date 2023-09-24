@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId "me.zogodo.youtubelite"
-        minSdkVersion 26
+        minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
         versionName "1.5"
@@ -47,5 +47,5 @@ dependencies {
     //implementation 'org.adblockplus:adblock-android:+'
     //implementation 'org.adblockplus:adblock-android-settings:+'
 
-    implementation 'androidx.media:media:1.3.0'
+    implementation 'androidx.media:media:1.3.0' //音乐通知从安卓8才有，加这个android.support.v4.media.session.MediaSessionCompat可以兼容以前的版本
 }

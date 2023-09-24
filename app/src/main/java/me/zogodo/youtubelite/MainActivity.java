@@ -7,7 +7,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Icon;
 import android.media.MediaPlayer;
 import android.media.session.MediaSession;
 import android.os.Build;
@@ -18,6 +17,7 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
@@ -76,7 +76,8 @@ public class MainActivity extends AppCompatActivity
         MyMediaNotify();
     }
 
-    private void MyMediaNotify0()
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void MyMediaNotify_O()
     {
         MediaSession mediaSession = new MediaSession(this, "PlayerService");
 
@@ -94,12 +95,12 @@ public class MainActivity extends AppCompatActivity
         bld1.setStyle(mediaStyle);
         bld1.setContentTitle("MyMediaNotify");
         bld1.setSmallIcon(R.drawable.ic_youtube);
-        //bld1.addAction(R.drawable.ic_pause, "Pause", pit1);
+        bld1.addAction(R.drawable.ic_pause, "Pause", pit1);
         bld1.setContentIntent(pit0);
 
-        Icon ic = Icon.createWithResource(this, R.drawable.ic_pause);
-        Notification.Action action = new Notification.Action.Builder(ic, "Pause", pit1).build();
-        bld1.addAction(action);
+        //Icon ic = Icon.createWithResource(this, R.drawable.ic_pause);
+        //Notification.Action action = new Notification.Action.Builder(ic, "Pause", pit1).build();
+        //bld1.addAction(action);
 
         Notification notification = bld1.build();
 
@@ -131,7 +132,7 @@ public class MainActivity extends AppCompatActivity
         bld.setStyle(mediaStyle);
         bld.setContentTitle("Wonderful music");
         bld.setContentText("My Awesome Band");
-                //.setLargeIcon(albumArtBitmap)
+        //bld.setLargeIcon(albumArtBitmap)
         bld.setContentIntent(pit0);
 
         Notification notification = bld.build();
