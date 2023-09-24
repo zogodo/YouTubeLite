@@ -1,26 +1,14 @@
 package me.zogodo.youtubelite;
 
-import android.app.Notification;
-import android.app.Notification.MediaStyle;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
-import android.media.session.MediaSession;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.media.session.MediaSessionCompat;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
-import androidx.core.content.ContextCompat;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -28,7 +16,6 @@ public class MainActivity extends AppCompatActivity
     public static String indexUrl = "file:///android_asset/goto.html";
     public static WebView webView = null;
     long exitTime = 0;
-    int notifyId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -49,11 +36,11 @@ public class MainActivity extends AppCompatActivity
         webView = new MyWebView();
         webView.loadUrl(indexUrl);
 
-        openRawMusicS();
+        OpenRawMusicS();
     }
 
     private MediaPlayer mediaPlayer1;
-    private void openRawMusicS() {
+    private void OpenRawMusicS() {
         mediaPlayer1 = MediaPlayer.create(this, R.raw.slience);
         mediaPlayer1.start();
         mediaPlayer1.setLooping(true);
@@ -65,7 +52,7 @@ public class MainActivity extends AppCompatActivity
     {
         super.onResume();
         Log.e("noti", "onResume");
-        cancelNotification(notifyId);
+        MyNotification.CancelNotification(MyNotification.notifyId);
     }
 
     @Override
@@ -73,116 +60,7 @@ public class MainActivity extends AppCompatActivity
     {
         super.onPause();
         Log.e("noti", "onPause");
-        MyMediaNotify();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void MyMediaNotify_O()
-    {
-        MediaSession mediaSession = new MediaSession(this, "PlayerService");
-
-        MediaStyle mediaStyle = new MediaStyle();
-        mediaStyle.setShowActionsInCompactView(0);  //折叠后还显示第一个icon 如果要显示多个可以写 (0, 1) 最多三个
-        mediaStyle.setMediaSession(mediaSession.getSessionToken());
-
-        Intent it0 = new Intent(this, MainActivity.class);
-        PendingIntent pit0 = PendingIntent.getActivity(this, 0, it0, 0);
-
-        Intent it1 = new Intent(this, NotificationClickReceiver.class);
-        PendingIntent pit1 = PendingIntent.getBroadcast(this,  0, it1, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        Notification.Builder bld1 = new Notification.Builder(this, "channel_id");
-        bld1.setStyle(mediaStyle);
-        bld1.setContentTitle("MyMediaNotify");
-        bld1.setSmallIcon(R.drawable.ic_youtube);
-        bld1.addAction(R.drawable.ic_pause, "Pause", pit1);
-        bld1.setContentIntent(pit0);
-
-        //Icon ic = Icon.createWithResource(this, R.drawable.ic_pause);
-        //Notification.Action action = new Notification.Action.Builder(ic, "Pause", pit1).build();
-        //bld1.addAction(action);
-
-        Notification notification = bld1.build();
-
-        NotificationManager nm = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
-        assert nm != null;
-        nm.notify(notifyId, notification);
-    }
-
-    private void MyMediaNotify()
-    {
-        MediaSessionCompat mediaSession = new MediaSessionCompat(this, "PlayerService");
-
-        androidx.media.app.NotificationCompat.MediaStyle mediaStyle = new androidx.media.app.NotificationCompat.MediaStyle();
-        mediaStyle.setShowActionsInCompactView(0); //折叠后还显示第一个icon 如果要显示多个可以写 (0, 1) 最多三个
-        mediaStyle.setMediaSession(mediaSession.getSessionToken());
-
-        Intent it0 = new Intent(this, MainActivity.class);
-        PendingIntent pit0 = PendingIntent.getActivity(this, 0, it0, 0);
-
-        Intent it1 = new Intent(this, NotificationClickReceiver.class);
-        PendingIntent pit1 = PendingIntent.getBroadcast(this,  0, it1, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        NotificationCompat.Builder bld = new NotificationCompat.Builder(this, "channel_id");
-        bld.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-        bld.setSmallIcon(R.drawable.ic_youtube);
-        //bld.addAction(R.drawable.ic_prev, "Previous", prevPendingIntent)
-        bld.addAction(R.drawable.ic_pause, "Pause", pit1);
-        //bld.addAction(R.drawable.ic_next, "Next", nextPendingIntent)
-        bld.setStyle(mediaStyle);
-        bld.setContentTitle("Wonderful music");
-        bld.setContentText("My Awesome Band");
-        //bld.setLargeIcon(albumArtBitmap)
-        bld.setContentIntent(pit0);
-
-        Notification notification = bld.build();
-
-        NotificationManager nm = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
-        assert nm != null;
-        nm.notify(notifyId, notification);
-    }
-
-    private void MyNotify()
-    {
-        String channelId = "channel_id";
-        String title = "Running in the background";
-
-        Intent it0 = new Intent(this, MainActivity.class);
-        PendingIntent pit0 = PendingIntent.getActivity(this, 0, it0, 0);
-
-        Intent it1 = new Intent(this, NotificationClickReceiver.class);
-        PendingIntent pit1 = PendingIntent.getBroadcast(this,  0, it1, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        NotificationCompat.Builder bld = new NotificationCompat.Builder(this, channelId);
-        bld.setOngoing(true);
-        bld.setSmallIcon(R.drawable.ic_youtube);
-        bld.setContentTitle(title);
-        bld.setPriority(NotificationManager.IMPORTANCE_MAX);
-        bld.setCategory(Notification.CATEGORY_SERVICE);
-        bld.setColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
-        bld.addAction(R.drawable.ic_youtube, "Pause / Play", pit1);
-        bld.setContentIntent(pit0);
-        //bld.setCustomBigContentView();
-
-        NotificationManager nm = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-        {
-            NotificationChannel channel = new NotificationChannel(channelId, title, NotificationManager.IMPORTANCE_HIGH);
-            nm.createNotificationChannel(channel);
-            bld.setChannelId(channelId);
-        }
-        Notification ntf = bld.build();
-        //ntf.contentIntent = pit0;  //same as bld.setContentIntent(pit)
-        assert nm != null;
-        nm.notify(notifyId, ntf);
-    }
-
-    public void cancelNotification(int notifyId)
-    {
-        NotificationManager nMgr = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-        assert nMgr != null;
-        nMgr.cancel(notifyId);
+        MyNotification.MyMediaNotify();
     }
 
     @Override
@@ -236,7 +114,7 @@ public class MainActivity extends AppCompatActivity
     public void onDestroy()
     {
         Log.e("noti", "onDestroy");
-        cancelNotification(notifyId);
+        MyNotification.CancelNotification(MyNotification.notifyId);
         super.onDestroy();
     }
 }
