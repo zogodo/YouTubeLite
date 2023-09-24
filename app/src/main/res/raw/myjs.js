@@ -40,7 +40,9 @@ if (movie_player != null && movie_player.zz_set == null) {
 function PauseOrPlay() {
     if (movie_player.getPlayerState() == 1) {
         movie_player.pauseVideo();
+        return 0;
     } else {
         movie_player.playVideo();
+        return 1;
     }
 }
