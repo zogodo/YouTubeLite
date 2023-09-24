@@ -43,8 +43,8 @@ public class MyNotification
         bld.addAction(R.drawable.ic_pause, "Pause", pit1);
         //bld.addAction(R.drawable.ic_next, "Next", nextPendingIntent)
         bld.setStyle(mediaStyle);
-        bld.setContentTitle("Wonderful music");
-        bld.setContentText("My Awesome Band");
+        bld.setContentTitle("Youtube Video");
+        bld.setContentText("Running in the background");
         //bld.setLargeIcon(albumArtBitmap)
         bld.setContentIntent(pit0);
 
