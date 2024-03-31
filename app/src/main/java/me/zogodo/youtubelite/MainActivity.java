@@ -1,7 +1,6 @@
 package me.zogodo.youtubelite;
 
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -35,16 +34,6 @@ public class MainActivity extends AppCompatActivity
 
         webView = new MyWebView();
         webView.loadUrl(indexUrl);
-
-        OpenRawMusicS();
-    }
-
-    private MediaPlayer mediaPlayer1;
-    private void OpenRawMusicS() {
-        mediaPlayer1 = MediaPlayer.create(this, R.raw.slience);
-        mediaPlayer1.start();
-        mediaPlayer1.setLooping(true);
-        //mediaPlayer1.stop();
     }
 
     @Override
