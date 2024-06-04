@@ -48,6 +48,11 @@ function PauseOrPlay() {
 }
 
 function GetVideoInfo() {
-    var info = "Youtube Video☯Running in the background☯Url";
+    if (!window.location.href.startsWith('https://m.youtube.com/watch?v=')) {
+        return "XXX☯YYY☯ZZZ";
+    }
+    var title = document.querySelectorAll('.slim-video-information-title .yt-core-attributed-string')[0].innerHTML;
+    var content = document.querySelectorAll('.slim-owner-channel-name .yt-core-attributed-string')[0].innerHTML;
+    var info = title + '☯' + content + '☯' + 'Url';
     return info;
 }
