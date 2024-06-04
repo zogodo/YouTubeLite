@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.webkit.ValueCallback;
 import android.webkit.WebView;
 import android.widget.Toast;
 
@@ -49,7 +50,16 @@ public class MainActivity extends AppCompatActivity
     {
         super.onPause();
         Log.e("noti", "onPause");
-        MyNotification.MyMediaNotify();
+
+        ValueCallback cb = new ValueCallback<String>() {
+            @Override
+            public void onReceiveValue(String value) {
+                String[] vInfs = value.split("\n");
+                //MyNotification.MyMediaNotify(vInfs[0], vInfs[1], vInfs[2]);
+                MyNotification.MyMediaNotify("vInfs[0]", "vInfs[1]", "vInfs[2]");
+            }
+        };
+        webView.evaluateJavascript("javascript:GetVideoInfo();", cb);
     }
 
     @Override

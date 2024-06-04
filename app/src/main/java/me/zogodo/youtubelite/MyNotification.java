@@ -22,7 +22,7 @@ public class MyNotification
     public static NotificationManager nm;
     public static PendingIntent pit1;
 
-    public static void MyMediaNotify()
+    public static void MyMediaNotify(String title, String contentText, String iconUrl)
     {
         MediaSessionCompat mediaSession = new MediaSessionCompat(MainActivity.me, "PlayerService");
 
@@ -43,9 +43,10 @@ public class MyNotification
         bld.addAction(R.drawable.ic_pause, "Pause", pit1);
         //bld.addAction(R.drawable.ic_next, "Next", nextPendingIntent)
         bld.setStyle(mediaStyle);
-        bld.setContentTitle("Youtube Video");
-        bld.setContentText("Running in the background");
-        //bld.setLargeIcon(albumArtBitmap)
+        bld.setContentTitle(title);
+        bld.setContentText(contentText);
+        //Bitmap bm = BitmapFactory.decodeResource(MainActivity.me.getResources(), R.mipmap.ic_launcher);
+        //bld.setLargeIcon(bm);
         bld.setContentIntent(pit0);
 
         Notification notification = bld.build();
