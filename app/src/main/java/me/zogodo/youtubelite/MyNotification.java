@@ -6,6 +6,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.session.MediaSession;
 import android.os.Build;
 import android.support.v4.media.session.MediaSessionCompat;
@@ -45,8 +47,8 @@ public class MyNotification
         bld.setStyle(mediaStyle);
         bld.setContentTitle(title);
         bld.setContentText(contentText);
-        //Bitmap bm = BitmapFactory.decodeResource(MainActivity.me.getResources(), R.mipmap.ic_launcher);
-        //bld.setLargeIcon(bm);
+        Bitmap bm = BitmapFactory.decodeResource(MainActivity.me.getResources(), R.drawable.ic_youtube);
+        bld.setLargeIcon(bm); //没用?
         bld.setContentIntent(pit0);
 
         Notification notification = bld.build();

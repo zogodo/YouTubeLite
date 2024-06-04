@@ -54,9 +54,10 @@ public class MainActivity extends AppCompatActivity
         ValueCallback cb = new ValueCallback<String>() {
             @Override
             public void onReceiveValue(String value) {
-                String[] vInfs = value.split("\n");
-                //MyNotification.MyMediaNotify(vInfs[0], vInfs[1], vInfs[2]);
-                MyNotification.MyMediaNotify("vInfs[0]", "vInfs[1]", "vInfs[2]");
+                //返回的字符串包括前后两个双引号
+                value = value.substring(1, value.length()-1);
+                String[] vInfs = value.split("☯");
+                MyNotification.MyMediaNotify(vInfs[0], vInfs[1], vInfs[2]);
             }
         };
         webView.evaluateJavascript("javascript:GetVideoInfo();", cb);

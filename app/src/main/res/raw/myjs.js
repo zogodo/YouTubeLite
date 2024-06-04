@@ -48,5 +48,6 @@ function PauseOrPlay() {
 }
 
 function GetVideoInfo() {
-    return "Youtube Video\nRunning in the background\nUrl";
+    var info = "Youtube Video☯Running in the background☯Url";
+    return info;
 }
