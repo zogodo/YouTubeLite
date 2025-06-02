@@ -64,7 +64,7 @@ public class MyNotification
         int icon = R.drawable.ic_play;
         if (re.equals("1")) icon = R.drawable.ic_pause;
 
-        bld.clearActions();
+        //bld.clearActions();
         bld.addAction(icon, "Play", pit1);
         nm.notify(notifyId, bld.build());
     }

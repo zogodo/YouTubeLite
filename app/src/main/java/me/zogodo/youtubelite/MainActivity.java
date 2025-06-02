@@ -1,5 +1,6 @@
 package me.zogodo.youtubelite;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,9 +9,7 @@ import android.webkit.ValueCallback;
 import android.webkit.WebView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends Activity
 {
     public static MainActivity me;
     public static String indexUrl = "file:///android_asset/goto.html";
@@ -21,7 +20,6 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().hide();
         MainActivity.me = this;
 
         Intent intent = getIntent();

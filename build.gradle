@@ -18,8 +18,11 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter()
-        
+        //mavenCentral()
+        //jcenter()
+        maven {
+            url "https://maven.aliyun.com/nexus/content/groups/public/"
+        }
     }
 }
 
