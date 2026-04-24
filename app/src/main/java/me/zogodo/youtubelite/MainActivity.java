@@ -1,7 +1,9 @@
 package me.zogodo.youtubelite;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -39,10 +41,9 @@ public class MainActivity extends Activity
     public void onResume()
     {
         super.onResume();
-        Log.e("noti", "onResume");
-        MyNotification.CancelNotification(MyNotification.notifyId);
     }
 
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     public void onPause()
     {
@@ -55,7 +56,6 @@ public class MainActivity extends Activity
                 //返回的字符串包括前后两个双引号
                 value = value.substring(1, value.length()-1);
                 String[] vInfs = value.split("☯");
-                MyNotification.MyMediaNotify(vInfs[0], vInfs[1], vInfs[2]);
             }
         };
         webView.evaluateJavascript("javascript:GetVideoInfo();", cb);
@@ -112,7 +112,6 @@ public class MainActivity extends Activity
     public void onDestroy()
     {
         Log.e("noti", "onDestroy");
-        MyNotification.CancelNotification(MyNotification.notifyId);
         super.onDestroy();
     }
 }

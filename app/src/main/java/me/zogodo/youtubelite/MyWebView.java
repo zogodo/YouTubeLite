@@ -1,20 +1,20 @@
 package me.zogodo.youtubelite;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-
-import org.adblockplus.libadblockplus.android.webview.AdblockWebView;
+import android.webkit.WebView;
 
 import java.util.Stack;
 
 /**
  * Created by zogod on 17/2/19.
  */
-public class MyWebView extends AdblockWebView
+public class MyWebView extends WebView
 {
     //region 共有变量
     public static Stack<MyWebView> webview_stack = null;
@@ -84,6 +84,7 @@ public class MyWebView extends AdblockWebView
                 "})()");
     }
 
+    @TargetApi(Build.VERSION_CODES.ECLAIR_MR1)
     @SuppressLint("SetJavaScriptEnabled")
     public void WebViewInit()
     {
