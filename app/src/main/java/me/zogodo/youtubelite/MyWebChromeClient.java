@@ -50,21 +50,6 @@ public class MyWebChromeClient extends WebChromeClient
         super.onShowCustomView(view, callback);
     }
 
-    /*
-    @Override
-    public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-        String url = request.getUrl().toString();
-        
-        // 检查 URL 是否包含广告关键词或匹配黑名单
-        if (AdBlocker.isAd(url)) {
-            // 返回一个空的响应，拦截请求
-            return new WebResourceResponse("text/plain", "UTF-8", null);
-        }
-        
-        return super.shouldInterceptRequest(view, request);
-    }
-    */
-
     @Override
     public void onHideCustomView() {
         MainActivity.me.setContentView(MyWebView.webview_stack.peek());

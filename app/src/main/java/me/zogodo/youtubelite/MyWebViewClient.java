@@ -6,8 +6,11 @@ import android.os.Build;
 import android.util.Log;
 import android.webkit.CookieManager;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import java.io.ByteArrayInputStream;
 
 /**
  * Created by zogod on 17/2/19.
@@ -37,6 +40,26 @@ public class MyWebViewClient extends WebViewClient
     {
         Log.e("zzz " + mywebview.hashCode(), "shouldOverrideUrlLoading " + req.getUrl().toString());
         return false;
+    }
+
+    private final String[] adDomains = {
+            "googleads.g.doubleclick.net",
+            "pubads.g.doubleclick.net",
+            "adservice.google.com",
+            "youtube.com/pagead/"
+    };
+
+    @Override
+    public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+        String url = request.getUrl().toString();
+        for (String domain : adDomains) {
+            if (url.contains(domain)) {
+                // 返回空响应
+                return new WebResourceResponse("text/plain", "utf-8",
+                        new ByteArrayInputStream("".getBytes()));
+            }
+        }
+        return super.shouldInterceptRequest(view, request);
     }
 
     public void onPageStarted(WebView view, String url, Bitmap favicon)
