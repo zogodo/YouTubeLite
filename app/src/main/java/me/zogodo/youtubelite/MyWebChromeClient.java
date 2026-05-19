@@ -25,6 +25,9 @@ public class MyWebChromeClient extends WebChromeClient
     @Override
     public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg)
     {
+        //点击一个 _blank 的 <a> 时触发
+        //原是用来打开一个新标签的
+        //这里用来做返回不重载
         Log.e("zzz " + view.hashCode(), "onCreateWindow");
 
         MyWebView new_mywebview = new MyWebView();
@@ -40,6 +43,7 @@ public class MyWebChromeClient extends WebChromeClient
     @SuppressLint("SourceLockedOrientationActivity")
     @Override
     public void onShowCustomView(View view, CustomViewCallback callback) {
+        //进入全屏
         MainActivity.me.setContentView(view);
         MainActivity.me.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
@@ -52,6 +56,7 @@ public class MyWebChromeClient extends WebChromeClient
 
     @Override
     public void onHideCustomView() {
+        //退出全屏
         MainActivity.me.setContentView(MyWebView.webview_stack.peek());
         MainActivity.me.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
 
