@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <title>Jellyfin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        .container {
+            width: 100%;
+            aspect-ratio: 16/9;
+        }
+        .item a {
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+        .container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background-color: #f0f0f0;
+        }
+        .ipt_div {
+            height: 60px;
+            box-sizing: border-box;
+            padding: 10px 8px;
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            right: 0px;
+            background: red;
+        }
+        .ipt_div input {
+            padding: 10px;
+            position: fixed;
+            top: 10px;
+            left: 8px;
+            right: 8px;
+        }
+        p {
+            margin: 70px 0 10px 0;
+        }
+    </style>
+</head>
+<body ng-app="myApp" ng-controller="myCtrl">
+    <div class="ipt_div">
+    <input ng-model="filter" ng-change="FilterVideo()" placeholder="空格隔开可多重匹配"/>
+    </div>
+    <p>{{videos.length}}</p>
+    <div class="item" ng-repeat="video in videos" ng-if="video.Type=='Video'">
+        <!--
+        {{video.Type}} : {{video.Id}} : {{video.Name}} : {{video.Path}}
+        <video width="800" controls>
+            <source ng-src="{{server}}/Items/{{video.Id}}/Download?api_key={{api_key}}" type="video/mp4">
+            <source ng-src="{{server}}/Videos/{{video.Id}}/stream?static=true&api_key={{api_key}}" type="video/ts">
+            您的浏览器不支持 HTML5 视频。
+        </video>
+        -->
+        <div class="container">
+            <img src="{{server}}/Items/{{video.Id}}/Images/Primary?api_key={{api_key}}&maxWidth=960&maxHeight=540&tag={{video.ImageTags.Primary}}" style="width:100%">
+        </div>
+        <a target="_blank" href="{{server}}/web/#/details?id={{video.Id}}">{{video.Path}}</a>
+        <br/>
+        <br/>
+    </div>
+</body>
+
+<script src="angular.min.js"></script>
+<script>
+    function Perm(n) {
+        const res = Array.from({ length: n }, (_, i) => i);
+        for (let i = n - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [res[i], res[j]] = [res[j], res[i]];
+        }
+        return res;
+    }
+    var app = angular.module('myApp', []);
+    app.controller('myCtrl', function($scope, $http) {
+        var all_videos = [];
+        $scope.filter = "";
+        $scope.server = 'http://192.168.33.192:9096';
+        $scope.api_key = '81b450fd530f45b09ce8025f01bdf31b';
+        $scope.ParentId = '0b530665b2fc4c202ed078fee34ef85a';
+        var url = `${$scope.server}/Items?ParentId=${$scope.ParentId}&Recursive=true&Fields=Path&api_key=${$scope.api_key}`;
+        $http.get(url).then(function(response) {
+            var indexs = Perm(response.data.Items.length);
+            for (const i of indexs) {
+                if (response.data.Items[i].Type != 'Video') {
+                    continue;
+                }
+                all_videos.push(response.data.Items[i]);
+            }
+            $scope.videos = all_videos.slice(0, 100); //只拿前100个,太多了页面卡
+        });
+
+        $scope.FilterVideo = function() {
+            $scope.videos = [];
+            var texts = $scope.filter.split(' ');
+            for (var i in all_videos) {
+                for (var j in texts) {
+                    if (all_videos[i].Path.includes(texts[j])) {
+                        $scope.videos.push(all_videos[i]);
+                        break;
+                    }
+                }
+                if ($scope.videos.length >= 100) break;
+            }
+        };
+    });
+</script>
+
+</html>
