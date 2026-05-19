@@ -94,6 +94,19 @@ public class MyWebViewClient extends WebViewClient
         String domain = url.replaceAll("https?://(www.)?([^/]+).*", "$2");
         CookieTool.SaveCookie(MainActivity.me, cookieStr, domain);
 
+        /*
+        // 1. 构建你的 HTML 字符串，注意：在 URL 后面追加了 &origin=https://www.youtube.com
+        String htmlData = "<!DOCTYPE html><html><head><style>body{margin:0;padding:0;background:#000;}iframe{width:100%;height:100%;position:absolute;top:0;left:0;border:none;}</style></head><body>" +
+                "<iframe src='https://www.youtube.com/embed/Srfin-7c3Co?si=MKpy4zU5-uGxoO9g&origin=https://www.youtube.com' " +
+                "allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' allowfullscreen></iframe>" +
+                "</body></html>";
+
+        // 2. 使用 loadDataWithBaseURL 进行加载
+        // 关键在于第一个参数 baseUrl，我们填入 https://www.youtube.com 
+        // 这样 WebView 内部发出的所有网络请求都会默认带上 YouTube 官方的域，从而完美绕过错误 153
+        webView.loadDataWithBaseURL("https://www.youtube.com", htmlData, "text/html", "UTF-8", null);
+        */
+
         super.onPageFinished(view, url);
     }
 
