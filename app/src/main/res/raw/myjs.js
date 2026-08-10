@@ -56,3 +56,29 @@ function GetVideoInfo() {
     var info = title + '☯' + content + '☯' + 'Url';
     return info;
 }
+
+function MuteAd() {
+    var player = document.getElementById("movie_player");
+    if (player == null) { return; }
+    var adEl = document.querySelector('.ytp-ad-player-overlay, .ytp-ad-action-interrupt, .ytp-ad-image-overlay');
+    if (adEl == null) { return; }
+    player.mute();
+    if (typeof player.skipAd === 'function') {
+        player.skipAd();
+    }
+}
+function SkipVideoAd() {
+    var btn = document.querySelector('.ytp-skip-ad-button, .ytp-ad-skip-button, .ytp-ad-skip-button-modern, .ytp-skip-ad-button-modern');
+    if (btn != null) { btn.click(); }
+    var close = document.querySelector('.ytp-ad-overlay-close-button');
+    if (close != null) { close.click(); }
+    MuteAd();
+}
+setInterval(SkipVideoAd, 300);
+
+var adCss = document.createElement('style');
+adCss.type = 'text/css';
+adCss.innerHTML = '.ytp-ad-overlay-container,.ytp-ad-text-overlay,.video-ads,#player-ads,ytd-ad-slot-renderer,.ytp-ad-action-interrupt,.ytp-ad-player-overlay,.ytp-ad-module,.ytp-ad-image-overlay,.ytp-ad-skip-button-container{display:none!important}';
+document.head.appendChild(adCss);
+
+

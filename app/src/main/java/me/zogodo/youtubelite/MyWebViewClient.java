@@ -46,7 +46,11 @@ public class MyWebViewClient extends WebViewClient
             "googleads.g.doubleclick.net",
             "pubads.g.doubleclick.net",
             "adservice.google.com",
-            "youtube.com/pagead/"
+            "youtube.com/pagead/",
+            "youtube.com/api/stats/ads",
+            "youtube.com/youtubei/v1/player/ad_break",
+            "ads.youtube.com",
+            "youtube.com/api/stats/qoe"
     };
 
     @Override
