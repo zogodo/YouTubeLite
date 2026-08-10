@@ -41,6 +41,7 @@ public class MainActivity extends Activity
     public void onResume()
     {
         super.onResume();
+        KeepAliveService.stop(this);
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -59,6 +60,24 @@ public class MainActivity extends Activity
             }
         };
         webView.evaluateJavascript("javascript:GetVideoInfo();", cb);
+
+        //后台若仍在播放,启动前台服务保活,防止被系统杀掉
+        webView.evaluateJavascript("javascript:IsVideoPlaying();", new ValueCallback<String>() {
+            @Override
+            public void onReceiveValue(String value) {
+                if ("true".equals(value))
+                {
+                    try
+                    {
+                        KeepAliveService.start(MainActivity.me);
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 
     @Override

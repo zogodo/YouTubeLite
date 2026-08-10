@@ -57,6 +57,15 @@ function GetVideoInfo() {
     return info;
 }
 
+function IsVideoPlaying() {
+    var player = document.getElementById("movie_player");
+    if (player != null && typeof player.getPlayerState === 'function') {
+        var state = player.getPlayerState();
+        return state == 1 || state == 3;
+    }
+    return false;
+}
+
 function MuteAd() {
     var player = document.getElementById("movie_player");
     if (player == null) { return; }
