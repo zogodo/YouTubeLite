@@ -87,7 +87,7 @@ setInterval(SkipVideoAd, 300);
 
 var adCss = document.createElement('style');
 adCss.type = 'text/css';
-adCss.innerHTML = '.ytp-ad-overlay-container,.ytp-ad-text-overlay,.video-ads,#player-ads,ytd-ad-slot-renderer,.ytp-ad-action-interrupt,.ytp-ad-player-overlay,.ytp-ad-module,.ytp-ad-image-overlay,.ytp-ad-skip-button-container{display:none!important}';
+adCss.innerHTML = '.chip-bar,.ytp-ad-overlay-container,.ytp-ad-text-overlay,.video-ads,#player-ads,ytd-ad-slot-renderer,.ytp-ad-action-interrupt,.ytp-ad-player-overlay,.ytp-ad-module,.ytp-ad-image-overlay,.ytp-ad-skip-button-container{display:none!important}';
 document.head.appendChild(adCss);
 
 

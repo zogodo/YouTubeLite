@@ -5,6 +5,8 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -146,15 +148,24 @@ public class MyWebView extends WebView
 
     private void showImageMenu(final String imageUrl)
     {
-        String[] items = {"保存图片"};
+        String[] items = {"保存图片", "复制视频链接"};
         new AlertDialog.Builder(MainActivity.me)
-                .setTitle("图片操作")
+                .setTitle("操作")
                 .setItems(items, new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
-                        saveImage(MainActivity.me, imageUrl);
+                        if (which == 0)
+                        {
+                            saveImage(MainActivity.me, imageUrl);
+                        }
+                        else
+                        {
+                            ClipboardManager cm = (ClipboardManager) MainActivity.me.getSystemService(Context.CLIPBOARD_SERVICE);
+                            cm.setPrimaryClip(ClipData.newPlainText("videoUrl", MyWebView.this.getUrl()));
+                            Toast.makeText(MainActivity.me, "视频链接已复制", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 })
                 .show();
