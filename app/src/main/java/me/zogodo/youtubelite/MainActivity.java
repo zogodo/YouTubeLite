@@ -16,6 +16,8 @@ public class MainActivity extends Activity
     public static MainActivity me;
     public static String indexUrl = "file:///android_asset/goto.html";
     public static WebView webView = null;
+    public static final int REQUEST_SAVE_IMAGE = 100;
+    public static String pendingImageUrl = null;
     long exitTime = 0;
 
     @Override
@@ -86,6 +88,19 @@ public class MainActivity extends Activity
         Log.e("a", "onNewIntent");
         super.onNewIntent(null);
     };
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
+    {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_SAVE_IMAGE && grantResults.length > 0
+                && grantResults[0] == android.content.pm.PackageManager.PERMISSION_GRANTED
+                && pendingImageUrl != null)
+        {
+            MyWebView.downloadAndSave(this, pendingImageUrl);
+            pendingImageUrl = null;
+        }
+    }
 
     @Override
     public void setContentView(View view)
