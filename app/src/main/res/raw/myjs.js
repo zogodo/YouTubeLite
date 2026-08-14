@@ -30,19 +30,44 @@ function ClickBut(query) {
 ClickBut(".ytp-unmute");  /*取消静音*/
 
 var QUALITIES =  ['auto', 'tiny', 'small', 'medium', 'large', 'hd720', 'hd1080', 'hd1440', 'hd2160', 'hd2880', 'highres'];
-var movie_player = document.getElementById("movie_player");
-/*console.log(movie_player.getPlaybackQuality());*/
-if (movie_player != null && movie_player.zz_set == null) {
-    movie_player.setPlaybackQualityRange("hd720");
-    movie_player.zz_set = true;
+
+function SetQuality() {
+    var player = document.getElementById("movie_player");
+    if (player == null) { return; }
+    try {
+        if (typeof player.setPlaybackQuality === 'function') {
+            player.setPlaybackQuality("hd720");
+        }
+        if (typeof player.setPlaybackQualityRange === 'function') {
+            player.setPlaybackQualityRange("hd720");
+        }
+    } catch (e) { }
 }
+/*播放器未就绪时重试,直到就绪*/
+var qn = 0;
+function SetQualityLoop() {
+    var player = document.getElementById("movie_player");
+    if (player != null && typeof player.getPlayerState === 'function') {
+        SetQuality();
+        return;
+    }
+    if (qn++ > 20) { return; }
+    setTimeout(SetQualityLoop, 500);
+}
+SetQualityLoop();
+/*新视频加载或状态变化时重新设置,防止被重置*/
+document.addEventListener('yt-navigate-finish', SetQuality);
+window.addEventListener('onStateChange', SetQuality);
+
 
 function PauseOrPlay() {
-    if (movie_player.getPlayerState() == 1) {
-        movie_player.pauseVideo();
+    var player = document.getElementById("movie_player");
+    if (player == null) { return 0; }
+    if (player.getPlayerState() == 1) {
+        player.pauseVideo();
         return 0;
     } else {
-        movie_player.playVideo();
+        player.playVideo();
         return 1;
     }
 }
