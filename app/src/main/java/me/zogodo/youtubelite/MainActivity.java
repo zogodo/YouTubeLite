@@ -25,6 +25,7 @@ public class MainActivity extends Activity
     {
         super.onCreate(savedInstanceState);
         MainActivity.me = this;
+        getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         Intent intent = getIntent();
         String dataString = intent.getDataString();
