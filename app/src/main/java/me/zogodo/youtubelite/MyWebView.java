@@ -4,8 +4,10 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -14,10 +16,8 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
-import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
@@ -37,7 +37,7 @@ public class MyWebView extends WebView
     //region 共有变量
     public static Stack<MyWebView> webview_stack = null;
     public static String myJs = null;
-    public static String myCss = ".chip-bar{display:none;}";
+    public static String myCss = ".chip-bar{display:none!important;}";
     //endregion
 
     //region 构造器
@@ -146,18 +146,18 @@ public class MyWebView extends WebView
 
     private void showImageMenu(final String imageUrl)
     {
-        PopupMenu menu = new PopupMenu(MainActivity.me, this);
-        menu.getMenu().add("保存图片");
-        menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
-        {
-            @Override
-            public boolean onMenuItemClick(MenuItem item)
-            {
-                saveImage(MainActivity.me, imageUrl);
-                return true;
-            }
-        });
-        menu.show();
+        String[] items = {"保存图片"};
+        new AlertDialog.Builder(MainActivity.me)
+                .setTitle("图片操作")
+                .setItems(items, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        saveImage(MainActivity.me, imageUrl);
+                    }
+                })
+                .show();
     }
 
     public static void saveImage(Context ctx, final String imageUrl)
