@@ -19,6 +19,7 @@ import android.provider.MediaStore;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.webkit.ValueCallback;
 import android.webkit.WebView;
 import android.widget.Toast;
 
@@ -133,11 +134,18 @@ public class MyWebView extends WebView
             if (hr != null)
             {
                 String extra = hr.getExtra();
+                int type = hr.getType();
                 if (extra != null &&
-                        (hr.getType() == HitTestResult.IMAGE_TYPE
-                                || hr.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE))
+                        (type == HitTestResult.IMAGE_TYPE
+                                || type == HitTestResult.SRC_IMAGE_ANCHOR_TYPE))
                 {
                     showImageMenu(extra);
+                    return true;
+                }
+                else if (extra != null && type == HitTestResult.ANCHOR_TYPE)
+                {
+                    //文本链接(如视频标题):extra 就是链接地址
+                    showLinkMenu(extra);
                     return true;
                 }
             }
@@ -145,6 +153,22 @@ public class MyWebView extends WebView
             return false;
         }
     };
+
+    private void showLinkMenu(final String linkUrl)
+    {
+        String[] items = {"复制链接"};
+        new AlertDialog.Builder(MainActivity.me)
+                .setTitle("操作")
+                .setItems(items, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        copyToClipboard(linkUrl);
+                    }
+                })
+                .show();
+    }
 
     private void showImageMenu(final String imageUrl)
     {
@@ -162,13 +186,30 @@ public class MyWebView extends WebView
                         }
                         else
                         {
-                            ClipboardManager cm = (ClipboardManager) MainActivity.me.getSystemService(Context.CLIPBOARD_SERVICE);
-                            cm.setPrimaryClip(ClipData.newPlainText("videoUrl", MyWebView.this.getUrl()));
-                            Toast.makeText(MainActivity.me, "视频链接已复制", Toast.LENGTH_SHORT).show();
+                            //长按的是缩略图(位于视频链接内),通过JS找到其所在链接复制
+                            MyWebView.this.evaluateJavascript(
+                                    "javascript:FindVideoLink('" + imageUrl + "');",
+                                    new ValueCallback<String>()
+                                    {
+                                        @Override
+                                        public void onReceiveValue(String value)
+                                        {
+                                            if (value == null || value.length() < 3) return;
+                                            String link = value.substring(1, value.length() - 1);
+                                            copyToClipboard(link);
+                                        }
+                                    });
                         }
                     }
                 })
                 .show();
+    }
+
+    private void copyToClipboard(String link)
+    {
+        ClipboardManager cm = (ClipboardManager) MainActivity.me.getSystemService(Context.CLIPBOARD_SERVICE);
+        cm.setPrimaryClip(ClipData.newPlainText("videoUrl", link));
+        Toast.makeText(MainActivity.me, "视频链接已复制", Toast.LENGTH_SHORT).show();
     }
 
     public static void saveImage(Context ctx, final String imageUrl)

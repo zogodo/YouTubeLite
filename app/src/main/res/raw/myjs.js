@@ -91,6 +91,26 @@ function IsVideoPlaying() {
     return false;
 }
 
+/*根据图片URL找到其所在链接,找不到则返回当前页URL(可能是视频页自身的缩略图)*/
+function FindVideoLink(imageUrl) {
+    if (imageUrl == null) { return location.href; }
+    var imgs = document.querySelectorAll('img');
+    for (var i = 0; i < imgs.length; i++) {
+        if (imgs[i].src == imageUrl) {
+            var a = imgs[i].closest ? imgs[i].closest('a') : null;
+            if (a == null) {
+                var n = imgs[i];
+                while (n != null && n.tagName != 'A') { n = n.parentElement; }
+                a = n;
+            }
+            if (a != null && a.href) {
+                return a.href;
+            }
+        }
+    }
+    return location.href;
+}
+
 function MuteAd() {
     var player = document.getElementById("movie_player");
     if (player == null) { return; }
