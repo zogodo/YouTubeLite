@@ -132,7 +132,21 @@ setInterval(SkipVideoAd, 300);
 
 var adCss = document.createElement('style');
 adCss.type = 'text/css';
-adCss.innerHTML = '.chip-bar,.ytp-ad-overlay-container,.ytp-ad-text-overlay,.video-ads,#player-ads,ytd-ad-slot-renderer,.ytp-ad-action-interrupt,.ytp-ad-player-overlay,.ytp-ad-module,.ytp-ad-image-overlay,.ytp-ad-skip-button-container{display:none!important}';
+adCss.textContent = '.chip-bar,.ytp-ad-overlay-container,.ytp-ad-text-overlay,.video-ads,#player-ads,ytd-ad-slot-renderer,.ytp-ad-action-interrupt,.ytp-ad-player-overlay,.ytp-ad-module,.ytp-ad-image-overlay,.ytp-ad-skip-button-container{display:none!important}';
 document.head.appendChild(adCss);
+
+/*=== 修复:播放器始终固定在上方(全屏退出后会被取消固定) ===*/
+function ForceStickyPlayer() {
+    var container = document.querySelector('#player-container-id');
+    if (container == null) { return; }
+    document.documentElement.classList.add('sticky-player');
+    var app = document.querySelector('ytm-app');
+    if (app) { app.classList.add('sticky-player'); }
+    var header = document.querySelector('ytm-header');
+    if (header) { header.classList.add('sticky-player'); }
+    container.classList.add('sticky-player');
+}
+ForceStickyPlayer();
+setInterval(ForceStickyPlayer, 300);
 
 

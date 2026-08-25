@@ -59,6 +59,23 @@ public class MyWebChromeClient extends WebChromeClient
         win.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         win.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
+        //全屏退出后强制播放器固定在上方(配合 myjs.js 里的 ForceStickyPlayer)
+        if (!MyWebView.webview_stack.empty())
+        {
+            WebView wv = MyWebView.webview_stack.peek();
+            if (wv != null)
+            {
+                try
+                {
+                    wv.evaluateJavascript("javascript:ForceStickyPlayer();", null);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+
         super.onHideCustomView();
     }
 }

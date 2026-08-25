@@ -100,7 +100,7 @@ public class MyWebView extends WebView
                 "var parent = document.getElementsByTagName('head').item(0);" +
                 "var style = document.createElement('style');" +
                 "style.type = 'text/css';" +
-                "style.innerHTML = '" + MyWebView.myCss + "';" +
+                "style.textContent = '" + MyWebView.myCss + "';" +
                 "parent.appendChild(style)" +
                 "})()");
     }
