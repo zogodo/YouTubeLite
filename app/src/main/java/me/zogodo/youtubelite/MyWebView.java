@@ -40,7 +40,7 @@ public class MyWebView extends WebView
     //region 共有变量
     public static Stack<MyWebView> webview_stack = null;
     public static String myJs = null;
-    public static String myCss = ".chip-bar{display:none!important;}";
+    public static String myCss = "";
     //endregion
 
     //region 构造器

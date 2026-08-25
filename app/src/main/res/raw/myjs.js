@@ -132,7 +132,7 @@ setInterval(SkipVideoAd, 300);
 
 var adCss = document.createElement('style');
 adCss.type = 'text/css';
-adCss.textContent = '.chip-bar,.ytp-ad-overlay-container,.ytp-ad-text-overlay,.video-ads,#player-ads,ytd-ad-slot-renderer,.ytp-ad-action-interrupt,.ytp-ad-player-overlay,.ytp-ad-module,.ytp-ad-image-overlay,.ytp-ad-skip-button-container{display:none!important}';
+adCss.textContent = '.ytp-ad-overlay-container,.ytp-ad-text-overlay,.video-ads,#player-ads,ytd-ad-slot-renderer,.ytp-ad-action-interrupt,.ytp-ad-player-overlay,.ytp-ad-module,.ytp-ad-image-overlay,.ytp-ad-skip-button-container{display:none!important}';
 document.head.appendChild(adCss);
 
 /*=== 修复:播放器始终固定在上方(全屏退出后会被取消固定) ===*/
