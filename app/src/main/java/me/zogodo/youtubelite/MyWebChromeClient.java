@@ -46,6 +46,8 @@ public class MyWebChromeClient extends WebChromeClient
         Window win = MainActivity.me.getWindow();
         win.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         win.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        //隐藏状态栏和底部导航栏(全面屏操作图标),进入沉浸模式
+        setSystemBarsHidden(win, true);
 
         super.onShowCustomView(view, callback);
     }
@@ -58,6 +60,8 @@ public class MyWebChromeClient extends WebChromeClient
         Window win = MainActivity.me.getWindow();
         win.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         win.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        //退出全屏,恢复状态栏和导航栏显示
+        setSystemBarsHidden(win, false);
 
         //全屏退出后强制播放器固定在上方(配合 myjs.js 里的 ForceStickyPlayer)
         if (!MyWebView.webview_stack.empty())
@@ -77,5 +81,25 @@ public class MyWebChromeClient extends WebChromeClient
         }
 
         super.onHideCustomView();
+    }
+
+    //进入/退出沉浸式,隐藏或显示系统状态栏与底部导航栏
+    private void setSystemBarsHidden(Window win, boolean hidden)
+    {
+        View decorView = win.getDecorView();
+        if (hidden)
+        {
+            decorView.setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+        }
+        else
+        {
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+        }
     }
 }
