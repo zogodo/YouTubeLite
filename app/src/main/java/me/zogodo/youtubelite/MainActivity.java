@@ -45,6 +45,11 @@ public class MainActivity extends Activity
     {
         super.onResume();
         KeepAliveService.stop(this);
+        //回到前台,取消后台自动续播标记(恢复用户正常控制)
+        if (webView != null)
+        {
+            webView.evaluateJavascript("javascript:__keepPlaying = false;", null);
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -68,7 +73,8 @@ public class MainActivity extends Activity
         webView.evaluateJavascript("javascript:IsVideoPlaying();", new ValueCallback<String>() {
             @Override
             public void onReceiveValue(String value) {
-                if ("true".equals(value))
+                boolean playing = "true".equals(value);
+                if (playing)
                 {
                     try
                     {
@@ -79,6 +85,8 @@ public class MainActivity extends Activity
                         e.printStackTrace();
                     }
                 }
+                //设置标记:后台播放时若被其它应用(抢占音频焦点)打断暂停,页面看门狗会自动续播
+                webView.evaluateJavascript("javascript:__keepPlaying = " + playing + ";", null);
             }
         });
     }

@@ -149,4 +149,17 @@ function ForceStickyPlayer() {
 ForceStickyPlayer();
 setInterval(ForceStickyPlayer, 300);
 
+/*=== 后台播放不被其它应用打断:视频被外部暂停时自动续播 ===*/
+var __keepPlaying = false;
+function ResumeVideoIfInterrupted() {
+    if (__keepPlaying !== true) { return; }
+    var player = document.getElementById('movie_player');
+    if (player == null || typeof player.getPlayerState !== 'function') { return; }
+    /*state==2 表示被暂停(多为其它应用抢占音频焦点导致),自动继续播放*/
+    if (player.getPlayerState() == 2) {
+        try { player.playVideo(); } catch (e) { }
+    }
+}
+setInterval(ResumeVideoIfInterrupted, 1000);
+
 
