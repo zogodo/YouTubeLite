@@ -16,23 +16,27 @@ ToBlankLoop();
 
 /*up主名字乱码*/
 function FixUperName() {
-    /*var upers = document.querySelectorAll("span");*/
-    var upers = document.getElementsByClassName('slim-video-information-channel-name');
-    alert('upers ' + upers.length);
-    for (var i = 0; i < upers.length; i++) {
-        alert(i.toString() + upers[i].textContent);
+    /*var spans = document.querySelectorAll("span");*/
+    var spans = document.getElementsByClassName('slim-video-information-channel-name');
+    /*
+    alert('spans ' + spans.length);
+    for (var i = 0; i < spans.length; i++) {
+        alert(i.toString() + spans[i].textContent);
     }
-    if (upers.length <= 0) return;
-    var upers2 = upers[0].getElementsByTagName('span');
-    alert('upers2 ' + upers2.length);
-    for (var i = 0; i < upers2.length; i++) {
-        alert(i.toString() + upers2[i].textContent);
+    */
+    if (spans.length <= 0) return;
+    spans = spans[0].getElementsByTagName('span');
+    /*
+    alert('spans ' + spans.length);
+    for (var i = 0; i < spans.length; i++) {
+        alert(i.toString() + spans[i].textContent);
     }
-    var uper = upers2[2];
+    */
+    var uper = spans[2];
     uper.textContent = decodeURIComponent(uper.textContent);
     clearInterval(timer);
 }
-var timer = setInterval(FixUperName, 3000);
+var timer = setInterval(FixUperName, 1000);
 
 var n = 0;
 function ClickBut(query) {
