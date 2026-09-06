@@ -16,22 +16,9 @@ ToBlankLoop();
 
 /*up主名字乱码*/
 function FixUperName() {
-    /*var spans = document.querySelectorAll("span");*/
     var spans = document.getElementsByClassName('slim-video-information-channel-name');
-    /*
-    alert('spans ' + spans.length);
-    for (var i = 0; i < spans.length; i++) {
-        alert(i.toString() + spans[i].textContent);
-    }
-    */
     if (spans.length <= 0) return;
     spans = spans[0].getElementsByTagName('span');
-    /*
-    alert('spans ' + spans.length);
-    for (var i = 0; i < spans.length; i++) {
-        alert(i.toString() + spans[i].textContent);
-    }
-    */
     var uper = spans[2];
     uper.textContent = decodeURIComponent(uper.textContent);
     clearInterval(timer);
