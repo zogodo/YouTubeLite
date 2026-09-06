@@ -17,14 +17,6 @@ ToBlankLoop();
 /*up主名字乱码*/
 function FixUperName() {
     var upers = document.querySelectorAll("span");
-    /*
-    alert('upers ' + upers.length);
-    for (var i = 40; i < upers.length; i++) {
-        alert(i.toString() + upers[i].textContent);
-    }
-    alert(uper.textContent);
-    slim-video-information-channel-name
-    */
     if (upers.length <= 45) return;
     var uper = upers[45];
     uper.textContent = decodeURIComponent(uper.textContent);
