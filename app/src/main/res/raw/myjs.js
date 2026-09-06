@@ -16,9 +16,19 @@ ToBlankLoop();
 
 /*up主名字乱码*/
 function FixUperName() {
-    var upers = document.querySelectorAll("span");
-    if (upers.length <= 45) return;
-    var uper = upers[45];
+    /*var upers = document.querySelectorAll("span");*/
+    var upers = document.getElementsByClassName('slim-video-information-channel-name');
+    alert('upers ' + upers.length);
+    for (var i = 0; i < upers.length; i++) {
+        alert(i.toString() + upers[i].textContent);
+    }
+    if (upers.length <= 0) return;
+    var upers2 = upers[0].getElementsByTagName('span');
+    alert('upers2 ' + upers2.length);
+    for (var i = 0; i < upers2.length; i++) {
+        alert(i.toString() + upers2[i].textContent);
+    }
+    var uper = upers2[2];
     uper.textContent = decodeURIComponent(uper.textContent);
     clearInterval(timer);
 }
