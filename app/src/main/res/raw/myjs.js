@@ -16,13 +16,13 @@ ToBlankLoop();
 
 /*up主名字乱码*/
 function FixUperName() {
-    var uperName = document.getElementsByClassName('reel-player-header-channel-title sd-redesign-experiment')[0].textContent;
+    /*var uperName = document.getElementsByClassName('reel-player-header-channel-title sd-redesign-experiment')[0].textContent;*/
     var spans = document.getElementsByClassName('slim-video-information-channel-name');
     if (spans.length <= 0) return;
     spans = spans[0].getElementsByTagName('span');
     var uperId = spans[2];
-    /*uperId.textContent = decodeURIComponent(uperId.textContent);*/
-    uperId.textContent = uperName;
+    uperId.textContent = decodeURIComponent(uperId.textContent);
+    /*uperId.textContent = uperName;*/
     clearInterval(timer);
 }
 var timer = setInterval(FixUperName, 1000);
@@ -42,22 +42,46 @@ function ClickBut(query) {
 }
 ClickBut(".ytp-unmute");  /*取消静音*/
 
-var QUALITIES =  ['auto', 'tiny', 'small', 'medium', 'large', 'hd720', 'hd1080', 'hd1440', 'hd2160', 'hd2880', 'highres'];
-var m = 0;
-function SetQuality() {
-    var movie_player = document.getElementById("movie_player");
-    /*console.log(movie_player.getPlaybackQuality());*/
-    if (movie_player != null && movie_player.zz_set == null) {
-        movie_player.setPlaybackQualityRange("hd720");
-        movie_player.zz_set = true;
-        return;
-    }
-    if (m++ > 10) {
-        return;
-    }
-    setTimeout(SetQuality, 500);
+var DEFAULT_QUALITY = "hd720";  /*默认720P*/
+
+/*把偏好写入 localStorage,YouTube 播放器在加载视频和打开设置菜单时会读取它*/
+function SaveQualityPref() {
+    try {
+        localStorage.setItem("yt-player-quality", JSON.stringify({
+            data: { quality: DEFAULT_QUALITY, previousQuality: DEFAULT_QUALITY }
+        }));
+    } catch (e) { }
 }
-SetQuality();  /*默认720P*/
+SaveQualityPref();
+
+/*定时强制画质:只有视频真正开始播放(state==1/3)后设置画质才生效,
+  所以不能像以前那样在 movie_player 刚出现时一次性设置*/
+function ApplyQuality() {
+    var player = document.getElementById("movie_player");
+    if (player == null) { return; }
+
+    SaveQualityPref();
+
+    if (typeof player.getPlayerState !== "function") { return; }
+    var state = player.getPlayerState();
+    if (state != 1 && state != 3) { return; }
+
+    try {
+        if (player.getPlaybackQuality() === DEFAULT_QUALITY) { return; }
+    } catch (e) { }
+
+    try {
+        if (typeof player.setPlaybackQualityRange === "function") {
+            player.setPlaybackQualityRange(DEFAULT_QUALITY);
+        }
+    } catch (e) { }
+    try {
+        if (typeof player.setPlaybackQuality === "function") {
+            player.setPlaybackQuality(DEFAULT_QUALITY);
+        }
+    } catch (e) { }
+}
+setInterval(ApplyQuality, 1000);
 
 function PauseOrPlay() {
     if (movie_player.getPlayerState() == 1) {
@@ -158,5 +182,122 @@ function ResumeVideoIfInterrupted() {
     }
 }
 setInterval(ResumeVideoIfInterrupted, 1000);
+
+/*=== 修复:视频页下方"相关视频"不显示发布时间,这里补上 ===*/
+
+/*videoId -> 发布时间文本(如 "3天前")*/
+var __videoTimeMap = {};
+
+/*递归遍历对象,收集所有 videoId 与 publishedTimeText 的对应关系*/
+function CollectVideoTimes(obj) {
+    if (obj == null || typeof obj != "object") { return; }
+    if (Array.isArray(obj)) {
+        for (var i = 0; i < obj.length; i++) { CollectVideoTimes(obj[i]); }
+        return;
+    }
+    var id = obj.videoId;
+    var timeText = null;
+    var pt = obj.publishedTimeText;
+    if (pt != null) {
+        if (typeof pt.simpleText == "string") { timeText = pt.simpleText; }
+        else if (Array.isArray(pt.runs)) {
+            timeText = "";
+            for (var j = 0; j < pt.runs.length; j++) { timeText += pt.runs[j].text; }
+        }
+    }
+    if (typeof id == "string" && timeText != null && timeText != "") {
+        __videoTimeMap[id] = timeText;
+    }
+    for (var k in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, k)) { CollectVideoTimes(obj[k]); }
+    }
+}
+
+/*移动端 watch 页是服务端渲染,初始数据里已带相关视频*/
+if (window.ytInitialData != null) { CollectVideoTimes(window.ytInitialData); }
+if (window.ytInitialPlayerResponse != null) { CollectVideoTimes(window.ytInitialPlayerResponse); }
+
+/*拦截 /youtubei/v1/next、/browse 响应:滚动加载更多相关视频时也能拿到发布时间*/
+(function () {
+    var realFetch = window.fetch;
+    if (typeof realFetch == "function") {
+        window.fetch = function () {
+            var p = realFetch.apply(this, arguments);
+            var url = "";
+            try {
+                url = typeof arguments[0] == "string" ? arguments[0] : (arguments[0] && arguments[0].url) || "";
+            } catch (e) { }
+            if (url.indexOf("/youtubei/v1/") != -1) {
+                p.then(function (resp) {
+                    try {
+                        resp.clone().json().then(function (json) { CollectVideoTimes(json); }).catch(function () { });
+                    } catch (e) { }
+                }).catch(function () { });
+            }
+            return p;
+        };
+    }
+    var realOpen = XMLHttpRequest.prototype.open;
+    var realSend = XMLHttpRequest.prototype.send;
+    XMLHttpRequest.prototype.open = function (method, url) {
+        this.__zlUrl = url;
+        return realOpen.apply(this, arguments);
+    };
+    XMLHttpRequest.prototype.send = function () {
+        var self = this;
+        if (self.__zlUrl && self.__zlUrl.indexOf("/youtubei/v1/") != -1) {
+            self.addEventListener("load", function () {
+                try { CollectVideoTimes(JSON.parse(self.responseText)); } catch (e) { }
+            });
+        }
+        return realSend.apply(this, arguments);
+    };
+})();
+
+/*从链接里取 videoId*/
+function GetVideoIdFromHref(href) {
+    var m = (href || "").match(/[?&]v=([^&]+)/);
+    return m ? m[1] : null;
+}
+
+/*给相关视频补上发布时间(只在 /watch 页生效,首页本身已显示时间)*/
+function AddPublishTimeToRelated() {
+    if (location.pathname != "/watch") { return; }
+    var items = document.querySelectorAll("ytm-video-with-context-renderer");
+    for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+        if (item.querySelector('[data-zl-time]')) { continue; }   /*已注入过*/
+        var a = item.querySelector('a[href*="/watch?v="]');
+        if (a == null) { continue; }
+        var vid = GetVideoIdFromHref(a.getAttribute("href"));
+        if (vid == null) { continue; }
+        var time = __videoTimeMap[vid];
+        if (time == null || time == "") { continue; }
+
+        var bylines = item.querySelectorAll("ytm-badge-and-byline-renderer");
+        if (bylines.length == 0) { continue; }
+        var byline = bylines[bylines.length - 1];   /*追加到最后一个(通常是观看次数所在行)*/
+
+        var sep = document.createElement("span");
+        sep.className = "ytmBadgeAndBylineRendererSeparator";
+        sep.setAttribute("aria-hidden", "true");
+        sep.textContent = "•";
+
+        var ts = document.createElement("span");
+        ts.className = "ytmBadgeAndBylineRendererItemByline";
+        ts.setAttribute("dir", "auto");
+        ts.setAttribute("aria-hidden", "true");
+
+        var inner = document.createElement("span");
+        inner.className = "ytAttributedStringHost";
+        inner.setAttribute("data-zl-time", "1");
+        inner.textContent = time;
+        ts.appendChild(inner);
+
+        byline.appendChild(sep);
+        byline.appendChild(ts);
+    }
+}
+setInterval(AddPublishTimeToRelated, 1000);
 
 
