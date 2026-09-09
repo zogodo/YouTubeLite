@@ -16,11 +16,13 @@ ToBlankLoop();
 
 /*up主名字乱码*/
 function FixUperName() {
+    var uperName = document.getElementsByClassName('reel-player-header-channel-title sd-redesign-experiment')[0].textContent;
     var spans = document.getElementsByClassName('slim-video-information-channel-name');
     if (spans.length <= 0) return;
     spans = spans[0].getElementsByTagName('span');
-    var uper = spans[2];
-    uper.textContent = decodeURIComponent(uper.textContent);
+    var uperId = spans[2];
+    /*uperId.textContent = decodeURIComponent(uperId.textContent);*/
+    uperId.textContent = uperName;
     clearInterval(timer);
 }
 var timer = setInterval(FixUperName, 1000);
