@@ -42,10 +42,18 @@ public class MyWebViewClient extends WebViewClient
         return false;
     }
 
-    private final String[] adDomains = {
+    // 广告相关请求的 URL 匹配子串(第一层拦截,返回空响应中断广告脚本/图片/上报)
+    // NOTE: 不要加 youtubei/v1/player 等会影响页面正常功能的接口
+    private static final String[] adUrlPatterns = {
             "googleads.g.doubleclick.net",
             "pubads.g.doubleclick.net",
             "adservice.google.com",
+            "doubleclick.net",                    // googleads.g / pubads.g / securepubads.g / partnerad 等全部 Google 广告服务器
+            "googlesyndication.com",              // pagead2(广告JS) / tpc(广告图片) / adservice
+            "googleadservices.com",
+            "googletagservices.com",
+            "youtube.com/ad_companion",
+            "/get_midroll_",                       // 老的片头/片中广告接口
             "youtube.com/pagead/",
             "youtube.com/api/stats/ads",
             "youtube.com/youtubei/v1/player/ad_break",
@@ -56,9 +64,9 @@ public class MyWebViewClient extends WebViewClient
     @Override
     public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
         String url = request.getUrl().toString();
-        for (String domain : adDomains) {
-            if (url.contains(domain)) {
-                // 返回空响应
+        for (String pattern : adUrlPatterns) {
+            if (url.contains(pattern)) {
+                // 拦截广告请求,返回空响应
                 return new WebResourceResponse("text/plain", "utf-8",
                         new ByteArrayInputStream("".getBytes()));
             }
