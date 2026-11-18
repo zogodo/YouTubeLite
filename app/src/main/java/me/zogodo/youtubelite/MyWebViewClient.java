@@ -84,6 +84,13 @@ public class MyWebViewClient extends WebViewClient
         cookieManager.setAcceptCookie(true);
         cookieManager.setCookie(url, cookieStr);
 
+        //视频页是新WebView冷打开,没有用户手势,YouTube会静音自动播放;
+        //尽早开始轮询"点按取消静音"提示,出现后注入真实触摸解除(等效用户手点)
+        if (url != null && url.contains("/watch"))
+        {
+            this.mywebview.StartUnmuteTapPolling();
+        }
+
         super.onPageStarted(view, url, favicon);
     }
 

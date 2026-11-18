@@ -18,6 +18,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.ValueCallback;
 import android.webkit.WebView;
@@ -104,6 +105,112 @@ public class MyWebView extends WebView
                 "parent.appendChild(style)" +
                 "})()");
     }
+
+    //region 自动解除静音(真实触摸)
+    /*新 WebView 冷打开视频页没有用户手势,YouTube 会静音自动播放并显示
+      "点按取消静音"提示(.ytp-unmute).JS 只负责"看"(轮询提示是否出现并取坐标),
+      解除静音的动作是往该坐标注入一次真实 MotionEvent 触摸,
+      与用户亲手点击完全等效,不存在 JS 操纵播放器的兼容问题*/
+    private int unmutePollCount = 0;
+    private boolean unmutePolling = false;
+    private final android.os.Handler uiHandler = new android.os.Handler(android.os.Looper.getMainLooper());
+
+    public void StartUnmuteTapPolling()
+    {
+        if (unmutePolling)
+        {
+            return;
+        }
+        unmutePolling = true;
+        unmutePollCount = 0;
+        PollUnmuteChip();
+    }
+
+    private void PollUnmuteChip()
+    {
+        if (!unmutePolling || unmutePollCount > 30)
+        {
+            unmutePolling = false;
+            return;
+        }
+        unmutePollCount++;
+        this.evaluateJavascript(
+                "javascript:(function(){var c=document.querySelector('.ytp-unmute');" +
+                        "if(!c){return '';}" +
+                        "var r=c.getBoundingClientRect();" +
+                        "return (r.x+r.width/2)+','+(r.y+r.height/2);})()",
+                new ValueCallback<String>()
+                {
+                    @Override
+                    public void onReceiveValue(String value)
+                    {
+                        if (!unmutePolling)
+                        {
+                            return;
+                        }
+                        String pos = null;
+                        if (value != null && value.length() > 4)
+                        {
+                            pos = value.substring(1, value.length() - 1);   /*去掉首尾引号*/
+                        }
+                        if (pos == null || pos.isEmpty() || pos.indexOf(',') < 0)
+                        {
+                            uiHandler.postDelayed(new Runnable()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    PollUnmuteChip();
+                                }
+                            }, 200);
+                            return;
+                        }
+                        try
+                        {
+                            String[] parts = pos.split(",");
+                            /*getBoundingClientRect 是CSS像素,触摸事件用物理像素*/
+                            float density = getResources().getDisplayMetrics().density;
+                            float x = Float.parseFloat(parts[0]) * density;
+                            float y = Float.parseFloat(parts[1]) * density;
+                            DispatchRealTap(x, y);
+                        }
+                        catch (NumberFormatException e)
+                        {
+                            uiHandler.postDelayed(new Runnable()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    PollUnmuteChip();
+                                }
+                            }, 200);
+                        }
+                    }
+                });
+    }
+
+    /*注入一次真实触摸(DOWN+UP),Chromium当作可信用户输入处理*/
+    private void DispatchRealTap(float x, float y)
+    {
+        long now = android.os.SystemClock.uptimeMillis();
+        MotionEvent down = MotionEvent.obtain(now, now, MotionEvent.ACTION_DOWN, x, y, 0);
+        this.dispatchTouchEvent(down);
+        down.recycle();
+        uiHandler.postDelayed(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                long t = android.os.SystemClock.uptimeMillis();
+                MotionEvent up = MotionEvent.obtain(t, t, MotionEvent.ACTION_UP, x, y, 0);
+                MyWebView.this.dispatchTouchEvent(up);
+                up.recycle();
+                unmutePolling = false;   /*点到即止*/
+                Log.e("unmute", "real tap at " + x + "," + y);
+            }
+        }, 80);
+    }
+    //endregion
 
     @TargetApi(Build.VERSION_CODES.ECLAIR_MR1)
     @SuppressLint("SetJavaScriptEnabled")

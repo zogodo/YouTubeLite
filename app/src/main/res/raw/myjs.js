@@ -1,7 +1,22 @@
-/*不再强制 target=_blank 新窗口打开:
-  新 WebView 冷打开视频页没有用户手势,YouTube会进入静音自动播放(点按取消静音);
-  像浏览器一样在同页内导航,点击视频的手势会被播放器继承,直接带声播放.
-  返回键走 history.back(),SPA恢复上一页,同样不重载*/
+/*把所有链接改为 target=_blank 新窗口打开(onCreateWindow 只有 target=_blank 才触发),
+  每个页面一个 WebView 入栈,返回键直接弹栈,实现"返回不重载".
+  代价:新 WebView 冷打开视频页没有用户手势,YouTube 会静音自动播放;
+  由 Java 层(MyWebView.StartUnmuteTapPolling)注入真实触摸点"点按取消静音"解除*/
+function ToBlank() {
+    var links = document.querySelectorAll("a:not([target=_blank])");
+    for (var i = 0; i < links.length; i++) {
+        links[i].target = "_blank";
+    }
+    return links.length > 0
+}
+function ToBlankLoop() {
+    if (ToBlank()) {
+        window.addEventListener("scroll", ToBlank);
+        return;
+    }
+    setTimeout("ToBlankLoop()", 100);
+}
+ToBlankLoop();
 
 /*up主名字乱码*/
 function FixUperName() {

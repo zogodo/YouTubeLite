@@ -31,9 +31,13 @@ public class MyWebChromeClient extends WebChromeClient
         WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
         transport.setWebView(new_mywebview);
         resultMsg.sendToTarget();
+        /*不能在这里loadUrl预加载!
+          点击target=_blank时系统通过transport导航到目标url,这次导航携带点击手势,
+          播放器能直接带声自动播放;若先程序化loadUrl,手势激活丢失,YouTube会静音自动播放
         //TODO 这里不知道为什么需要load一次url, 而且这个url不能是本地的!
         //如果是本地url的话有时候会出现错误: New WebView for popup window must not have been previously navigated
         new_mywebview.loadUrl("https://youtube.com");
+        */
         return true;
     }
 
