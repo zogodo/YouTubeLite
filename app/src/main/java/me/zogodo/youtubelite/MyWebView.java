@@ -207,6 +207,16 @@ public class MyWebView extends WebView
                 up.recycle();
                 unmutePolling = false;   /*点到即止*/
                 Log.e("unmute", "real tap at " + x + "," + y);
+                //静音期间画质设置会被播放器忽略,解除静音后立即触发画质设置
+                try
+                {
+                    MyWebView.this.evaluateJavascript(
+                            "javascript:if(typeof SetQualityNow==='function'){SetQualityNow();}", null);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
             }
         }, 80);
     }

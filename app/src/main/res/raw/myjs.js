@@ -33,32 +33,19 @@ var timer = setInterval(FixUperName, 1000);
 
 var DEFAULT_QUALITY = "hd720";  /*默认720P*/
 
-/*把偏好写入 localStorage,YouTube 播放器在加载视频和打开设置菜单时会读取它*/
-function SaveQualityPref() {
-    try {
-        localStorage.setItem("yt-player-quality", JSON.stringify({
-            data: { quality: DEFAULT_QUALITY, previousQuality: DEFAULT_QUALITY }
-        }));
-    } catch (e) { }
-}
-SaveQualityPref();
-
-/*定时强制画质:只有视频真正开始播放(state==1/3)后设置画质才生效,
-  所以不能像以前那样在 movie_player 刚出现时一次性设置*/
-function ApplyQuality() {
+/*画质设置实测结论(2026):
+  1.mweb冷打开必然从ABR选择的低清(360p)开播,提前设置/写localStorage都无法改变开播画质;
+  2.静音自动播放期间(点按取消静音提示出现时)画质设置会被播放器忽略;
+  3.解除静音后画质请求生效,且播放器自己会把画质持久化到localStorage(不用我们写);
+  所以策略:事件驱动+快速轮询尽快设置,解除静音后由Java立即触发一次*/
+function SetQualityNow() {
     var player = document.getElementById("movie_player");
-    if (player == null) { return; }
-
-    SaveQualityPref();
-
-    if (typeof player.getPlayerState !== "function") { return; }
+    if (player == null || typeof player.getPlayerState !== "function") { return; }
     var state = player.getPlayerState();
-    if (state != 1 && state != 3) { return; }
-
+    if (state != 1 && state != 3) { return; }   /*未开播时设置了也无效*/
     try {
-        if (player.getPlaybackQuality() === DEFAULT_QUALITY) { return; }
+        if (player.getPlaybackQuality() === DEFAULT_QUALITY) { return; }   /*已达标*/
     } catch (e) { }
-
     try {
         if (typeof player.setPlaybackQualityRange === "function") {
             player.setPlaybackQualityRange(DEFAULT_QUALITY);
@@ -70,7 +57,20 @@ function ApplyQuality() {
         }
     } catch (e) { }
 }
-setInterval(ApplyQuality, 1000);
+
+/*事件驱动:播放器就绪/每次开始播放/画质被改动时立即设置*/
+function HookQualityEvents() {
+    var player = document.getElementById("movie_player");
+    if (player == null || player.__qualityHooked) { return; }
+    player.__qualityHooked = true;
+    player.addEventListener("onReady", function () { SetQualityNow(); });
+    player.addEventListener("onStateChange", function () { SetQualityNow(); });
+    player.addEventListener("onPlaybackQualityChange", function () { setTimeout(SetQualityNow, 300); });
+}
+setInterval(HookQualityEvents, 500);
+
+/*轮询兜底:覆盖事件没接上的情况(如SPA导航后播放器重建)*/
+setInterval(SetQualityNow, 500);
 
 function PauseOrPlay() {
     if (movie_player.getPlayerState() == 1) {
