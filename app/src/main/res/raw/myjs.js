@@ -1,18 +1,7 @@
-function ToBlank() {
-    var links = document.querySelectorAll("a:not([target=_blank])");
-    for (var i = 0; i < links.length; i++) {
-        links[i].target = "_blank";
-    }
-    return links.length > 0
-}
-function ToBlankLoop() {
-    if (ToBlank()) {
-        window.addEventListener("scroll", ToBlank);
-        return;
-    }
-    setTimeout("ToBlankLoop()", 100);
-}
-ToBlankLoop();
+/*不再强制 target=_blank 新窗口打开:
+  新 WebView 冷打开视频页没有用户手势,YouTube会进入静音自动播放(点按取消静音);
+  像浏览器一样在同页内导航,点击视频的手势会被播放器继承,直接带声播放.
+  返回键走 history.back(),SPA恢复上一页,同样不重载*/
 
 /*up主名字乱码*/
 function FixUperName() {
@@ -26,21 +15,6 @@ function FixUperName() {
     clearInterval(timer);
 }
 var timer = setInterval(FixUperName, 1000);
-
-var n = 0;
-function ClickBut(query) {
-    var but = document.querySelector(query);
-    console.log(query + ": " + but);
-    if (but != null) {
-        but.click();
-        return;
-    }
-    if (n++ > 10) {
-        return;
-    }
-    setTimeout('ClickBut(".ytp-unmute")', 500);
-}
-ClickBut(".ytp-unmute");  /*取消静音*/
 
 var DEFAULT_QUALITY = "hd720";  /*默认720P*/
 
