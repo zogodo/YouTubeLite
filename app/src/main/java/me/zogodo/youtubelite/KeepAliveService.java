@@ -181,8 +181,9 @@ public class KeepAliveService extends Service
     {
         try
         {
-            NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            nm.notify(NOTIFICATION_ID, buildNotification());
+            /*用 startForeground 重新提交通知(而非 notify):
+              keep住"前台服务通知"的身份,部分系统用 notify 更新时会丢失媒体卡片样式*/
+            startForeground(NOTIFICATION_ID, buildNotification());
         }
         catch (Exception e)
         {
@@ -246,13 +247,13 @@ public class KeepAliveService extends Service
                 @Override
                 public void onPlay()
                 {
-                    togglePlayback();
+                    resumePlayback();
                 }
 
                 @Override
                 public void onPause()
                 {
-                    togglePlayback();
+                    pausePlayback();
                 }
             });
             mediaSession.setActive(true);
@@ -285,8 +286,9 @@ public class KeepAliveService extends Service
             PlaybackState state = new PlaybackState.Builder()
                     .setActions(PlaybackState.ACTION_PLAY | PlaybackState.ACTION_PAUSE
                             | PlaybackState.ACTION_PLAY_PAUSE)
-                    /*始终报告 PLAYING:暂停时也不降级,保持媒体通知形态*/
-                    .setState(PlaybackState.STATE_PLAYING, PlaybackState.PLAYBACK_POSITION_UNKNOWN, 1.0f)
+                    /*上报真实状态:系统的媒体卡片按钮据此显示"暂停"/"播放"*/
+                    .setState(isPlaying ? PlaybackState.STATE_PLAYING : PlaybackState.STATE_PAUSED,
+                            PlaybackState.PLAYBACK_POSITION_UNKNOWN, 1.0f)
                     .build();
             mediaSession.setPlaybackState(state);
         }
