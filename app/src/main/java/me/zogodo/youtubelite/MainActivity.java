@@ -38,13 +38,23 @@ public class MainActivity extends Activity
 
         webView = new MyWebView();
         webView.loadUrl(indexUrl);
+
+        //一打开app就启动前台服务:常驻媒体通知(播放/暂停按钮),不关app就一直在
+        try
+        {
+            KeepAliveService.start(this);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onResume()
     {
         super.onResume();
-        KeepAliveService.stop(this);
+        //注意:不再在这里停止服务,媒体通知要常驻(只由任务关闭/退出时清理)
         //回到前台,取消后台自动续播标记(恢复用户正常控制)
         if (webView != null)
         {
@@ -155,6 +165,11 @@ public class MainActivity extends Activity
     public void onDestroy()
     {
         Log.e("noti", "onDestroy");
+        //真正退出app(返回键退出)时清理常驻的媒体通知;仅旋转/内存回收不清理
+        if (isFinishing())
+        {
+            KeepAliveService.stop(this);
+        }
         super.onDestroy();
     }
 }
