@@ -142,10 +142,13 @@ function SkipVideoAd() {
 setInterval(SkipVideoAd, 300);
 */
 
-/*=== 屏蔽一些广告元素 ===*/
+/*=== 屏蔽一些广告元素 ===
+  注意:不能隐藏 .video-ads/.ytp-ad-module/.ytp-ad-player-overlay/.ytp-ad-skip-button-container,
+  它们是"跳过广告"按钮的祖先/本身,祖先display:none会连带藏掉跳过按钮.
+  这里只隐藏纯浮层/广告卡片*/
 var adCss = document.createElement('style');
 adCss.type = 'text/css';
-adCss.textContent = '.ytp-ad-overlay-container,.ytp-ad-text-overlay,.video-ads,#player-ads,ytd-ad-slot-renderer,.ytp-ad-action-interrupt,.ytp-ad-player-overlay,.ytp-ad-module,.ytp-ad-image-overlay,.ytp-ad-skip-button-container{display:none!important}';
+adCss.textContent = '.ytp-ad-overlay-container,.ytp-ad-text-overlay,#player-ads,ytd-ad-slot-renderer,.ytp-ad-image-overlay,.ytp-ad-player-overlay-flyout-cta{display:none!important}';
 document.head.appendChild(adCss);
 
 /*=== 修复:播放器始终固定在上方(全屏退出后会被取消固定) ===*/
