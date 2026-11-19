@@ -68,6 +68,25 @@ function SeedDefaultPrefs() {
 }
 SeedDefaultPrefs();
 
+var QUALITIES =  ['auto', 'tiny', 'small', 'medium', 'large', 'hd720', 'hd1080', 'hd1440', 'hd2160', 'hd2880', 'highres'];
+var m = 0;
+function SetQuality() {
+    var movie_player = document.getElementById("movie_player");
+    /*console.log(movie_player.getPlaybackQuality());*/
+    if (movie_player != null && movie_player.zz_set == null) {
+        movie_player.setPlaybackQualityRange("hd720");
+        movie_player.zz_set = true;
+        return;
+    }
+    if (m++ > 60) {
+        return;
+    }
+    setTimeout(SetQuality, 500);
+}
+SetQuality();  /*默认720P*/
+/*var timer2 = setInterval(SetQuality, 1000);*/
+
+
 /*暂停播放接口*/
 function PauseOrPlay() {
     if (movie_player.getPlayerState() == 1) {
