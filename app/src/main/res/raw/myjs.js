@@ -39,47 +39,36 @@ function FixUperName() {
 }
 var timer1 = setInterval(FixUperName, 3000);
 
-var DEFAULT_QUALITY = "hd720";  /*默认720P*/
-
-/*画质设置实测结论(2026):
-  1.mweb冷打开必然从ABR选择的低清(360p)开播,提前设置/写localStorage都无法改变开播画质;
-  2.静音自动播放期间(点按取消静音提示出现时)画质设置会被播放器忽略;
-  3.解除静音后画质请求生效,且播放器自己会把画质持久化到localStorage(不用我们写);
-  所以策略:事件驱动+快速轮询尽快设置,解除静音后由Java立即触发一次*/
-function SetQualityNow() {
-    var player = document.getElementById("movie_player");
-    if (player == null || typeof player.getPlayerState !== "function") { return; }
-    var state = player.getPlayerState();
-    if (state != 1 && state != 3) { return; }   /*未开播时设置了也无效*/
+/*=== 在首页写入默认偏好到 localStorage(YouTube 自己的持久化格式) ===
+  原理:播放器每次打开视频时会读取这些键当作"用户上次的选择",原生应用画质和字幕偏好。
+  格式来自播放器源码与实测:
+    yt-player-quality            = {"data":"{\"quality\":720,\"previousQuality\":720}","expiration":..,"creation":..}
+    yt-player-caption-persistence= {"data":"false","expiration":..,"creation":..}
+  只在首页(路径为 /)写入,视频页不写,避免覆盖用户在播放页里的手动选择。
+  注意:必须先开启 WebView 的 DOM storage(setDomStorageEnabled(true)),否则 localStorage 无效*/
+var DEFAULT_QUALITY_ORDINAL = 720;    /*720p 在播放器里的画质序号*/
+function SeedDefaultPrefs() {
     try {
-        if (player.getPlaybackQuality() === DEFAULT_QUALITY) { return; }   /*已达标*/
-    } catch (e) { }
-    try {
-        if (typeof player.setPlaybackQualityRange === "function") {
-            player.setPlaybackQualityRange(DEFAULT_QUALITY);
-        }
-    } catch (e) { }
-    try {
-        if (typeof player.setPlaybackQuality === "function") {
-            player.setPlaybackQuality(DEFAULT_QUALITY);
-        }
+        if (!/(^|\.)youtube\.com$/.test(location.hostname)) { return; }
+        if (location.pathname != "/") { return; }   /*只在首页写入*/
+        var now = Date.now();
+        /*画质:data 是 JSON 字符串化的 {quality,previousQuality},quality 用序号;TTL 36天(与播放器一致)*/
+        localStorage.setItem("yt-player-quality", JSON.stringify({
+            data: JSON.stringify({ quality: DEFAULT_QUALITY_ORDINAL, previousQuality: DEFAULT_QUALITY_ORDINAL }),
+            expiration: now + 3110400000,
+            creation: now
+        }));
+        /*字幕:data 是 JSON 字符串化的布尔值,"false" 表示不启用字幕*/
+        localStorage.setItem("yt-player-caption-persistence", JSON.stringify({
+            data: "false",
+            expiration: now + 3122064000000,
+            creation: now
+        }));
     } catch (e) { }
 }
+SeedDefaultPrefs();
 
-/*事件驱动:播放器就绪/每次开始播放/画质被改动时立即设置*/
-function HookQualityEvents() {
-    var player = document.getElementById("movie_player");
-    if (player == null || player.__qualityHooked) { return; }
-    player.__qualityHooked = true;
-    player.addEventListener("onReady", function () { SetQualityNow(); });
-    player.addEventListener("onStateChange", function () { SetQualityNow(); });
-    player.addEventListener("onPlaybackQualityChange", function () { setTimeout(SetQualityNow, 300); });
-}
-setInterval(HookQualityEvents, 500);
-
-/*轮询兜底:覆盖事件没接上的情况(如SPA导航后播放器重建)*/
-setInterval(SetQualityNow, 500);
-
+/*暂停播放接口*/
 function PauseOrPlay() {
     if (movie_player.getPlayerState() == 1) {
         movie_player.pauseVideo();
@@ -90,6 +79,7 @@ function PauseOrPlay() {
     }
 }
 
+/*获取视频信息接口*/
 function GetVideoInfo() {
     if (!window.location.href.startsWith('https://m.youtube.com/watch?v=')) {
         return "XXX☯YYY☯ZZZ";
@@ -100,6 +90,7 @@ function GetVideoInfo() {
     return info;
 }
 
+/*判断视频是否正在播放接口*/
 function IsVideoPlaying() {
     var player = document.getElementById("movie_player");
     if (player != null && typeof player.getPlayerState === 'function') {
@@ -129,6 +120,8 @@ function FindVideoLink(imageUrl) {
     return window.location.href;
 }
 
+/*快速跳过广告,没用?*/
+/*
 function MuteAd() {
     var player = document.getElementById("movie_player");
     if (player == null) { return; }
@@ -147,7 +140,9 @@ function SkipVideoAd() {
     MuteAd();
 }
 setInterval(SkipVideoAd, 300);
+*/
 
+/*=== 屏蔽一些广告元素 ===*/
 var adCss = document.createElement('style');
 adCss.type = 'text/css';
 adCss.textContent = '.ytp-ad-overlay-container,.ytp-ad-text-overlay,.video-ads,#player-ads,ytd-ad-slot-renderer,.ytp-ad-action-interrupt,.ytp-ad-player-overlay,.ytp-ad-module,.ytp-ad-image-overlay,.ytp-ad-skip-button-container{display:none!important}';
