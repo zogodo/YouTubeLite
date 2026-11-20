@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.Log;
 import android.webkit.CookieManager;
+import android.webkit.ValueCallback;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
@@ -113,7 +114,72 @@ public class MyWebViewClient extends WebViewClient
         String domain = url.replaceAll("https?://(www.)?([^/]+).*", "$2");
         CookieTool.SaveCookie(MainActivity.me, cookieStr, domain);
 
+        //打开视频/短视频页后就更新媒体通知的标题和频道名(不用等退到后台)
+        //myjs.js 是通过 loadUrl 注入执行的,所以稍等片刻再调 GetVideoInfo,取不到则重试
+        if (url != null && (url.contains("/watch") || url.contains("/shorts")))
+        {
+            new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    fetchVideoInfoForNotification(3);
+                }
+            }, 600);
+        }
+
         super.onPageFinished(view, url);
+    }
+
+    /*读取当前页面的视频标题/频道名,更新媒体通知(数据未就绪时重试)*/
+    private void fetchVideoInfoForNotification(final int retries)
+    {
+        try
+        {
+            this.mywebview.evaluateJavascript("javascript:GetVideoInfo();", new ValueCallback<String>()
+            {
+                @Override
+                public void onReceiveValue(String value)
+                {
+                    boolean ok = false;
+                    try
+                    {
+                        String raw = (String) new org.json.JSONTokener(value).nextValue();
+                        String[] vInfs = raw.split("☯");
+                        if (vInfs.length >= 2)
+                        {
+                            String title = vInfs[0].trim();
+                            String channel = vInfs[1].trim();
+                            if (!"XXX".equals(title) && title.length() > 0)
+                            {
+                                Log.e("media", "updateMediaInfo title=" + title + " channel=" + channel);
+                                KeepAliveService.updateMediaInfo(title, channel);
+                                ok = true;
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                    if (!ok && retries > 0)
+                    {
+                        new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                fetchVideoInfoForNotification(retries - 1);
+                            }
+                        }, 1200);
+                    }
+                }
+            });
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -100,13 +100,22 @@ function PauseOrPlay() {
 
 /*获取视频信息接口*/
 function GetVideoInfo() {
-    if (!window.location.href.startsWith('https://m.youtube.com/watch?v=')) {
-        return "XXX☯YYY☯ZZZ";
-    }
-    var title = document.querySelectorAll('.slim-video-information-title .yt-core-attributed-string')[0].innerHTML;
-    var content = document.querySelectorAll('.slim-owner-channel-name .yt-core-attributed-string')[0].innerHTML;
-    var info = title + '☯' + content + '☯' + 'Url';
-    return info;
+    /*优先从播放器数据里取标题/频道名:不依赖会变的DOM类名,
+      普通视频页和Shorts都适用. 格式: 标题☯频道名☯Url */
+    try {
+        var pr = window.ytInitialPlayerResponse;
+        if (pr != null && pr.videoDetails != null && pr.videoDetails.title) {
+            return pr.videoDetails.title + '☯' + (pr.videoDetails.author || '') + '☯' + 'Url';
+        }
+    } catch (e) { }
+    /*兜底:从页面元素取(类名可能随版本变化)*/
+    try {
+        var t = document.querySelector('h1 .yt-core-attributed-string, .slim-video-information-title .yt-core-attributed-string');
+        if (t != null) {
+            return t.textContent + '☯' + '' + '☯' + 'Url';
+        }
+    } catch (e) { }
+    return "XXX☯YYY☯ZZZ";
 }
 
 /*判断视频是否正在播放接口*/

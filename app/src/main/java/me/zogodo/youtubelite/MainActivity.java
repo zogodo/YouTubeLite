@@ -69,15 +69,32 @@ public class MainActivity extends Activity
         super.onPause();
         Log.e("noti", "onPause");
 
-        ValueCallback cb = new ValueCallback<String>() {
+        //读取视频标题/频道名,更新媒体通知上显示的信息
+        webView.evaluateJavascript("javascript:GetVideoInfo();", new ValueCallback<String>() {
             @Override
             public void onReceiveValue(String value) {
-                //返回的字符串包括前后两个双引号
-                value = value.substring(1, value.length()-1);
-                String[] vInfs = value.split("☯");
+                try
+                {
+                    /*evaluateJavascript 返回的是JSON字符串(带引号和转义),用JSONTokener正确还原*/
+                    String raw = (String) new org.json.JSONTokener(value).nextValue();
+                    String[] vInfs = raw.split("☯");
+                    if (vInfs.length >= 2)
+                    {
+                        String title = vInfs[0].trim();
+                        String channel = vInfs[1].trim();
+                        /*GetVideoInfo 在非视频页会返回占位符 XXX/YYY,忽略*/
+                        if (!"XXX".equals(title) && title.length() > 0)
+                        {
+                            KeepAliveService.updateMediaInfo(title, channel);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
             }
-        };
-        webView.evaluateJavascript("javascript:GetVideoInfo();", cb);
+        });
 
         //后台若仍在播放,启动前台服务保活,防止被系统杀掉
         webView.evaluateJavascript("javascript:IsVideoPlaying();", new ValueCallback<String>() {

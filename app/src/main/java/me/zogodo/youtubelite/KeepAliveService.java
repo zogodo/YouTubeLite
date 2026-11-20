@@ -25,6 +25,23 @@ public class KeepAliveService extends Service
     private PowerManager.WakeLock wakeLock;
     private MediaSession mediaSession = null;
     private boolean isPlaying = false;
+    private static KeepAliveService instance = null;
+    private String mediaTitle = null;
+    private String mediaChannel = null;
+
+    /*由 MainActivity 在切后台时读取页面标题/频道名后调用,更新媒体通知上的信息*/
+    public static void updateMediaInfo(String title, String channel)
+    {
+        KeepAliveService svc = instance;
+        if (svc == null)
+        {
+            return;
+        }
+        svc.mediaTitle = title;
+        svc.mediaChannel = channel;
+        svc.updateMediaMetadata();
+        svc.refreshNotification();
+    }
 
     public static void start(Context ctx)
     {
@@ -48,6 +65,7 @@ public class KeepAliveService extends Service
     public void onCreate()
     {
         super.onCreate();
+        instance = this;
         createChannel();
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WAKE_LOCK_TAG);
@@ -74,6 +92,10 @@ public class KeepAliveService extends Service
         if (wakeLock != null && wakeLock.isHeld())
         {
             wakeLock.release();
+        }
+        if (instance == this)
+        {
+            instance = null;
         }
         if (mediaSession != null)
         {
@@ -258,16 +280,31 @@ public class KeepAliveService extends Service
             });
             mediaSession.setActive(true);
             updatePlaybackState();
-            try
+            updateMediaMetadata();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    /*媒体元数据:标题 + 频道名(系统的媒体卡片显示的就是 title/artist)*/
+    private void updateMediaMetadata()
+    {
+        if (mediaSession == null)
+        {
+            return;
+        }
+        try
+        {
+            MediaMetadata.Builder b = new MediaMetadata.Builder()
+                    .putString(MediaMetadata.METADATA_KEY_TITLE,
+                            (mediaTitle != null && mediaTitle.length() > 0) ? mediaTitle : "正在后台播放");
+            if (mediaChannel != null && mediaChannel.length() > 0)
             {
-                mediaSession.setMetadata(new MediaMetadata.Builder()
-                        .putString(MediaMetadata.METADATA_KEY_TITLE, "正在后台播放")
-                        .build());
+                b.putString(MediaMetadata.METADATA_KEY_ARTIST, mediaChannel);
             }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
+            mediaSession.setMetadata(b.build());
         }
         catch (Exception e)
         {
@@ -334,8 +371,18 @@ public class KeepAliveService extends Service
         {
             builder = new Notification.Builder(this);
         }
-        builder.setContentTitle("正在后台播放")
-                .setContentText(isPlaying ? "点击返回应用" : "已暂停,点击返回应用")
+        String nTitle = (mediaTitle != null && mediaTitle.length() > 0) ? mediaTitle : "正在后台播放";
+        String nText;
+        if (mediaChannel != null && mediaChannel.length() > 0)
+        {
+            nText = mediaChannel;
+        }
+        else
+        {
+            nText = isPlaying ? "点击返回应用" : "已暂停,点击返回应用";
+        }
+        builder.setContentTitle(nTitle)
+                .setContentText(nText)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentIntent(pi)
                 .setOngoing(true)
