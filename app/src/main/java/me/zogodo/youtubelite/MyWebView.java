@@ -75,11 +75,67 @@ public class MyWebView extends WebView
         Log.e("zzz " + this.hashCode(), "goBack " + MyWebView.webview_stack.size() + super.canGoBack());
         if (super.canGoBack()) {
             super.goBack();
+            /*历史回退后页面可能还是视频页,更新媒体通知的信息*/
+            UpdateMediaInfoFromPage(3);
             return;
         }
         MyWebView.webview_stack.pop();
         MyWebView old_mywebview = MyWebView.webview_stack.peek();
         MainActivity.me.setContentView(old_mywebview);
+        /*恢复的旧页面不会重新加载,onPageFinished不会触发,这里主动更新媒体通知*/
+        old_mywebview.UpdateMediaInfoFromPage(3);
+    }
+
+    /*从本页面读取视频标题/频道名/封面,更新媒体通知(数据未就绪时重试)*/
+    public void UpdateMediaInfoFromPage(final int retries)
+    {
+        try
+        {
+            this.evaluateJavascript("javascript:GetVideoInfo();", new ValueCallback<String>()
+            {
+                @Override
+                public void onReceiveValue(String value)
+                {
+                    boolean ok = false;
+                    try
+                    {
+                        String raw = (String) new org.json.JSONTokener(value).nextValue();
+                        String[] vInfs = raw.split("☯");
+                        if (vInfs.length >= 2)
+                        {
+                            String title = vInfs[0].trim();
+                            String channel = vInfs[1].trim();
+                            String artUrl = vInfs.length >= 3 ? vInfs[2].trim() : "";
+                            if (!"XXX".equals(title) && title.length() > 0)
+                            {
+                                Log.e("media", "updateMediaInfo title=" + title + " channel=" + channel);
+                                KeepAliveService.updateMediaInfo(title, channel, artUrl);
+                                ok = true;
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                    if (!ok && retries > 0)
+                    {
+                        new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                UpdateMediaInfoFromPage(retries - 1);
+                            }
+                        }, 1200);
+                    }
+                }
+            });
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
     //endregion
 

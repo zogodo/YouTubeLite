@@ -13,6 +13,7 @@ import android.media.session.PlaybackState;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.util.Log;
 import android.webkit.ValueCallback;
 import android.webkit.WebView;
 
@@ -28,9 +29,19 @@ public class KeepAliveService extends Service
     private static KeepAliveService instance = null;
     private String mediaTitle = null;
     private String mediaChannel = null;
+    private String mediaArtUrl = null;
+    private String artLoadedUrl = null;   /*已加载完成的封面URL,避免重复下载*/
+    private String artLoadingUrl = null;  /*正在下载的封面URL*/
+    private android.graphics.Bitmap mediaArt = null;
 
     /*由 MainActivity 在切后台时读取页面标题/频道名后调用,更新媒体通知上的信息*/
     public static void updateMediaInfo(String title, String channel)
+    {
+        updateMediaInfo(title, channel, null);
+    }
+
+    /*artUrl: 视频封面图URL(可为null)*/
+    public static void updateMediaInfo(String title, String channel, String artUrl)
     {
         KeepAliveService svc = instance;
         if (svc == null)
@@ -39,8 +50,125 @@ public class KeepAliveService extends Service
         }
         svc.mediaTitle = title;
         svc.mediaChannel = channel;
+        svc.mediaArtUrl = artUrl;
         svc.updateMediaMetadata();
         svc.refreshNotification();
+        svc.downloadMediaArt(artUrl);
+    }
+
+    /*后台下载封面图,完成后更新元数据和通知(大图标)*/
+    private void downloadMediaArt(final String url)
+    {
+        if (url == null || url.length() == 0)
+        {
+            return;
+        }
+        if (url.equals(artLoadedUrl) || url.equals(artLoadingUrl))
+        {
+            return;   /*已加载或正在加载*/
+        }
+        artLoadingUrl = url;
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                android.graphics.Bitmap bmp = null;
+                int code = -1;
+                try
+                {
+                    java.net.URL u = new java.net.URL(url);
+                    java.net.HttpURLConnection conn = (java.net.HttpURLConnection) u.openConnection();
+                    conn.setConnectTimeout(8000);
+                    conn.setReadTimeout(8000);
+                    conn.setDoInput(true);
+                    conn.setInstanceFollowRedirects(true);
+                    /*ytimg 对没有 Referer/UA 的请求可能返回403(项目里保存图片的逻辑也加了这两个头)*/
+                    conn.setRequestProperty("Referer", "https://www.youtube.com/");
+                    conn.setRequestProperty("User-Agent",
+                            "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36");
+                    conn.setRequestProperty("Accept", "image/*,*/*;q=0.8");
+                    code = conn.getResponseCode();
+                    if (code >= 200 && code < 300)
+                    {
+                        java.io.InputStream is = conn.getInputStream();
+                        bmp = android.graphics.BitmapFactory.decodeStream(is);
+                        is.close();
+                    }
+                    Log.e("media", "art download code=" + code + " url=" + url
+                            + " bmp=" + (bmp == null ? "null" : (bmp.getWidth() + "x" + bmp.getHeight())));
+                }
+                catch (Exception e)
+                {
+                    Log.e("media", "art download err: " + e);
+                    e.printStackTrace();
+                }
+                if (bmp == null && url != null && url.contains("hq720.jpg"))
+                {
+                    /*hq720 可能不存在(老视频),降级用 mqdefault(体积小且一定存在)*/
+                    final String fallback = url.replace("hq720.jpg", "mqdefault.jpg");
+                    new Thread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            try
+                            {
+                                java.net.URL u2 = new java.net.URL(fallback);
+                                java.net.HttpURLConnection c2 = (java.net.HttpURLConnection) u2.openConnection();
+                                c2.setConnectTimeout(8000);
+                                c2.setReadTimeout(8000);
+                                c2.setDoInput(true);
+                                c2.setInstanceFollowRedirects(true);
+                                c2.setRequestProperty("Referer", "https://www.youtube.com/");
+                                c2.setRequestProperty("User-Agent", "Mozilla/5.0");
+                                android.graphics.Bitmap b2 = android.graphics.BitmapFactory.decodeStream(c2.getInputStream());
+                                if (b2 != null)
+                                {
+                                    applyMediaArt(b2, fallback);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Log.e("media", "art fallback err: " + ex);
+                            }
+                            artLoadingUrl = null;
+                        }
+                    }).start();
+                    return;
+                }
+                final android.graphics.Bitmap finalBmp = bmp;
+                new android.os.Handler(android.os.Looper.getMainLooper()).post(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        if (finalBmp != null)
+                        {
+                            applyMediaArt(finalBmp, url);
+                        }
+                        artLoadingUrl = null;
+                    }
+                });
+            }
+        }).start();
+    }
+
+    /*应用封面图:保存并刷新元数据+通知(切主线程执行)*/
+    private void applyMediaArt(final android.graphics.Bitmap bmp, final String url)
+    {
+        new android.os.Handler(android.os.Looper.getMainLooper()).post(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                mediaArt = bmp;
+                artLoadedUrl = url;
+                updateMediaMetadata();
+                refreshNotification();
+                Log.e("media", "art applied " + url);
+            }
+        });
     }
 
     public static void start(Context ctx)
@@ -304,6 +432,11 @@ public class KeepAliveService extends Service
             {
                 b.putString(MediaMetadata.METADATA_KEY_ARTIST, mediaChannel);
             }
+            if (mediaArt != null)
+            {
+                b.putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, mediaArt);
+                b.putBitmap(MediaMetadata.METADATA_KEY_ART, mediaArt);
+            }
             mediaSession.setMetadata(b.build());
         }
         catch (Exception e)
@@ -388,6 +521,10 @@ public class KeepAliveService extends Service
                 .setOngoing(true)
                 .setCategory(Notification.CATEGORY_TRANSPORT)
                 .setVisibility(Notification.VISIBILITY_PUBLIC);
+        if (mediaArt != null)
+        {
+            builder.setLargeIcon(mediaArt);   /*通知上的封面大图*/
+        }
 
         Notification.Action action = new Notification.Action.Builder(
                 isPlaying ? R.drawable.ic_pause : R.drawable.ic_play,

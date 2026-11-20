@@ -82,10 +82,11 @@ public class MainActivity extends Activity
                     {
                         String title = vInfs[0].trim();
                         String channel = vInfs[1].trim();
+                        String artUrl = vInfs.length >= 3 ? vInfs[2].trim() : "";
                         /*GetVideoInfo 在非视频页会返回占位符 XXX/YYY,忽略*/
                         if (!"XXX".equals(title) && title.length() > 0)
                         {
-                            KeepAliveService.updateMediaInfo(title, channel);
+                            KeepAliveService.updateMediaInfo(title, channel, artUrl);
                         }
                     }
                 }

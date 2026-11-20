@@ -14,6 +14,7 @@ function ToBlankLoop() {
         window.addEventListener("scroll", ToBlank);
         return;
     }
+    window.removeEventListener("scroll", ToBlank);
     setTimeout("ToBlankLoop()", 100);
 }
 ToBlankLoop();
@@ -100,22 +101,34 @@ function PauseOrPlay() {
 
 /*获取视频信息接口*/
 function GetVideoInfo() {
-    /*优先从播放器数据里取标题/频道名:不依赖会变的DOM类名,
-      普通视频页和Shorts都适用. 格式: 标题☯频道名☯Url */
+    /*优先从播放器数据里取标题/频道名/封面:不依赖会变的DOM类名,
+      普通视频页和Shorts都适用. 格式: 标题☯频道名☯封面图URL */
+    var title = '', channel = '', art = '';
     try {
         var pr = window.ytInitialPlayerResponse;
         if (pr != null && pr.videoDetails != null && pr.videoDetails.title) {
-            return pr.videoDetails.title + '☯' + (pr.videoDetails.author || '') + '☯' + 'Url';
+            var vd = pr.videoDetails;
+            title = vd.title;
+            channel = vd.author || '';
+            /*封面用无签名的标准URL(i.ytimg.com/vi/<id>/...),比videoDetails里带签名的URL更稳*/
+            if (vd.videoId) {
+                art = 'https://i.ytimg.com/vi/' + vd.videoId + '/hq720.jpg';
+            }
+            if (art === '' && vd.thumbnail && vd.thumbnail.thumbnails && vd.thumbnail.thumbnails.length > 0) {
+                var list = vd.thumbnail.thumbnails;
+                art = list[list.length - 1].url || '';
+            }
         }
     } catch (e) { }
-    /*兜底:从页面元素取(类名可能随版本变化)*/
-    try {
-        var t = document.querySelector('h1 .yt-core-attributed-string, .slim-video-information-title .yt-core-attributed-string');
-        if (t != null) {
-            return t.textContent + '☯' + '' + '☯' + 'Url';
-        }
-    } catch (e) { }
-    return "XXX☯YYY☯ZZZ";
+    /*兜底:从页面元素取标题(类名可能随版本变化)*/
+    if (title === '') {
+        try {
+            var t = document.querySelector('h1 .yt-core-attributed-string, .slim-video-information-title .yt-core-attributed-string');
+            if (t != null) { title = t.textContent; }
+        } catch (e) { }
+    }
+    if (title === '') { return "XXX☯YYY☯ZZZ"; }
+    return title + '☯' + channel + '☯' + art;
 }
 
 /*判断视频是否正在播放接口*/
