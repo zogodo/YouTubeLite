@@ -20,25 +20,24 @@ function ToBlankLoop() {
 ToBlankLoop();
 
 /*up主名字乱码*/
+/*
 function FixUperName() {
     if (window.location.pathname != "/watch") {
         clearInterval(timer1);
         return;
     }
-    /*var uperName = document.getElementsByClassName('reel-player-header-channel-title sd-redesign-experiment')[0].textContent;*/
     var spans = document.getElementsByClassName('slim-video-information-channel-name');
     if (spans.length <= 0) {
-        /*window.location.href*/
         alert("FixUperName: spans.length=" + spans.length);
         return;
     }
     spans = spans[0].getElementsByTagName('span');
     var uperId = spans[2];
     uperId.textContent = decodeURIComponent(uperId.textContent);
-    /*uperId.textContent = uperName;*/
     clearInterval(timer1);
 }
 var timer1 = setInterval(FixUperName, 3000);
+*/
 
 /*=== 在首页写入默认偏好到 localStorage(YouTube 自己的持久化格式) ===
   原理:播放器每次打开视频时会读取这些键当作"用户上次的选择",原生应用画质和字幕偏好。
