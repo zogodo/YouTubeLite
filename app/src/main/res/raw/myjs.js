@@ -73,6 +73,7 @@ var m = 0;
 function SetQuality() {
     var movie_player = document.getElementById("movie_player");
     /*console.log(movie_player.getPlaybackQuality());*/
+    window.java.toast("Setting playback quality...");
     if (movie_player != null) {
         movie_player.setPlaybackQualityRange("hd720");
         return;
@@ -80,7 +81,7 @@ function SetQuality() {
     if (m++ > 60) {
         return;
     }
-    setTimeout(SetQuality, 500);
+    setTimeout(SetQuality, 5000);
 }
 SetQuality();  /*默认720P*/
 /*var timer2 = setInterval(SetQuality, 1000);*/

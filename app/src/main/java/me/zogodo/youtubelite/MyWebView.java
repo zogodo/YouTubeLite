@@ -284,6 +284,9 @@ public class MyWebView extends WebView
         /*允许无手势自动播放(和浏览器一样),YouTube便可直接带声播放,
           否则只能静音播放并显示"点按取消静音"*/
         this.getSettings().setMediaPlaybackRequiresUserGesture(false);
+        /*把 Java 对象暴露给网页JS: JS里用 window.java 调用(里带@JavascriptInterface的方法).
+          必须在 loadUrl 之前注册, 且只对可信页面使用(接口对所有frame可见) */
+        this.addJavascriptInterface(MainActivity.me, "java");
         this.setWebViewClient(new MyWebViewClient(this));
         //这两个是要在 Chrome inspect 调试时用的
         this.setWebChromeClient(new MyWebChromeClient());

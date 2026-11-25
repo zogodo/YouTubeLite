@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
 import android.webkit.WebView;
 import android.widget.Toast;
@@ -189,5 +190,18 @@ public class MainActivity extends Activity
             KeepAliveService.stop(this);
         }
         super.onDestroy();
+    }
+
+    @JavascriptInterface
+    public void toast(final String msg)
+    {
+        runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                Toast.makeText(MainActivity.me, msg, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
