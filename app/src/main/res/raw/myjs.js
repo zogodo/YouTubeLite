@@ -73,9 +73,8 @@ var m = 0;
 function SetQuality() {
     var movie_player = document.getElementById("movie_player");
     /*console.log(movie_player.getPlaybackQuality());*/
-    if (movie_player != null && movie_player.zz_set == null) {
+    if (movie_player != null) {
         movie_player.setPlaybackQualityRange("hd720");
-        movie_player.zz_set = true;
         return;
     }
     if (m++ > 60) {
