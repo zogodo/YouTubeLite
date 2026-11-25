@@ -12,6 +12,8 @@ function ToBlank() {
 function ToBlankLoop() {
     if (ToBlank()) {
         window.addEventListener("scroll", ToBlank);
+        window.java.toast("ToBlank OK");
+        SetQuality();
         return;
     }
     window.removeEventListener("scroll", ToBlank);
@@ -69,22 +71,23 @@ function SeedDefaultPrefs() {
 SeedDefaultPrefs();
 
 var QUALITIES =  ['auto', 'tiny', 'small', 'medium', 'large', 'hd720', 'hd1080', 'hd1440', 'hd2160', 'hd2880', 'highres'];
-var m = 0;
 function SetQuality() {
+    if (window.location.pathname != "/watch") {
+        /*window.java.toast("SetQuality 1: not /watch");*/
+        clearInterval(timer2);
+        return;
+    }
     var movie_player = document.getElementById("movie_player");
     /*console.log(movie_player.getPlaybackQuality());*/
-    window.java.toast("Setting playback quality...");
+    /*window.java.toast("SetQuality 2: " + new Date().toLocaleString());*/
     if (movie_player != null) {
         movie_player.setPlaybackQualityRange("hd720");
+        window.java.toast("SetQuality 3");
+        clearInterval(timer2);
         return;
     }
-    if (m++ > 60) {
-        return;
-    }
-    setTimeout(SetQuality, 5000);
 }
-SetQuality();  /*默认720P*/
-/*var timer2 = setInterval(SetQuality, 1000);*/
+var timer2 = setInterval(SetQuality, 3500);
 
 
 /*暂停播放接口*/
